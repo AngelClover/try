@@ -1,0 +1,30 @@
+import home from './com/home.vue'
+import about from './com/about.vue'
+//var home = require('./com/home.vue')
+//var about = require('./com/about.vue')
+import upload from './com/upload.vue'
+import explorer from './com/explore.vue'
+import docclass from './com/docclass.vue'
+
+export default{
+    'home': {
+        component: home
+    },
+    'about': {
+        component: about
+    },
+    'login': {
+        name: 'login',
+        title: '登录',
+        component: (resolve) => require(['./com/login/login.vue'], resolve)
+    },
+    'upload': {
+        component: upload
+    },
+    'explore': {
+        component: explorer
+    },
+    'docclass': {
+        component: docclass
+    }
+}

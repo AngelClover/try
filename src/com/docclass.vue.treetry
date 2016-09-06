@@ -1,0 +1,120 @@
+<template>
+    this is doc class page
+    <item class="item">
+      <li>
+        <div :class="{bold: isFolder}"
+          @click="toggle"
+          @dblclick="changeType">
+          {{model.name}}
+          <span v-if="isFolder">[{{open ? '-' : '+'}}]</span>
+        </div>
+        <ul v-show="open" v-if="isFolder">
+          <item class="item" v-for="model in model.children" :model="model">
+          </item>
+          <li @click="addChild">+</li>
+        </ul>
+      </li>
+    </item>
+</template>
+
+<script>
+var data = {
+  name: '最高检',
+  children: 
+    { name: '办公厅',
+        children:[
+        {
+            name: '检察长办公室',
+            children: [
+                { name: '老规则文书档案'} ,
+                {name: '新规则文书档案'},
+                {name: '科技档案'},
+                {name: '实物档案'},
+                {name: '资料档案'},
+                {name: '实体采集报表'},
+                {name: '专业业务档案'}
+            ]
+        },
+        {
+            name: '秘书处',
+            children: [
+                { name: '老规则文书档案'} ,
+                {name: '新规则文书档案'},
+                {name: '科技档案'},
+                {name: '实物档案'},
+                {name: '资料档案'},
+                {name: '实体采集报表'},
+                {name: '专业业务档案'}
+            ]
+        },
+        {
+            name: '人大代表联络处',
+            children: [
+                { name: '老规则文书档案'} ,
+                {name: '新规则文书档案'},
+                {name: '科技档案'},
+                {name: '实物档案'},
+                {name: '资料档案'},
+                {name: '实体采集报表'},
+                {name: '专业业务档案'}
+            ]
+        }
+        ]
+    },
+}
+
+export default{
+  replace: true,
+  props: {
+    model: Object
+  },
+  data: function () {
+    return {
+      open: false
+    }
+  },
+  computed: {
+    isFolder: function () {
+      return this.model.children &&
+        this.model.children.length
+    }
+  },
+  methods: {
+    toggle: function () {
+      if (this.isFolder) {
+        this.open = !this.open
+      }
+    },
+    changeType: function () {
+      if (!this.isFolder) {
+        Vue.set(this.model, 'children', [])
+        this.addChild()
+        this.open = true
+      }
+    },
+    addChild: function () {
+      this.model.children.push({
+        name: 'new stuff'
+      })
+    }
+  }
+}
+</script>
+
+<style>
+body {
+    font-family: Menlo, Consolas, monospace;
+    color: #444;
+}
+.item {
+  cursor: pointer;
+}
+.bold {
+  font-weight: bold;
+}
+ul {
+  padding-left: 1em;
+  line-height: 1.5em;
+  list-style-type: dot;
+}
+</style>
