@@ -1,8 +1,109 @@
+<style type="text/css">
+    .error {
+        color: red;
+        padding: 5px 0;
+    }
+    #updateButton {
+        margin: 10px 0;
+    }
+    #class-dropdown {
+        margin: 10px 0;
+    }
+</style>
 <template>
-    this is upload page
+    <form id="file-form" action="http://angelclover.win:8099/login" method="post" enctype="multipart/form-data">
+        <input name="file" type="file" value="上传文件" v-on:change="checkFile">
+        <input name="class" type="hidden">
+        
+        <div class="dropdown" id="class-dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span class="selected-name">选择部门</span>
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            </ul>
+        </div>
+
+        <button type="button" id="updateButton" data-loading-text="Loading..." class="btn btn-primary" autocomplete="off" v-on:click="submit">
+          上传
+        </button>
+        <div class="error"></div>
+    </form>
+    <iframe id="iframe" name="iframe" width="1" height="1" style="display:none"></iframe>
+
 </template>
 
 <script>
-export default {
+module.exports = {
+    el:'#login-form',
+    name: 'addOrganization',
+    methods: {
+        submit: function() {
+            var ele = $("input[name=file]")[0];
+            if (!this.checkFile(ele.files[0]) || !this.validateClass()) return false;
+            // 解决跨域提交问题，后续可以使用被注释的代码
+            $('#file-form')[0].submit();
+            //this.iframSubmit();
+        },
+        checkFile: function(event) {
+            var MAX_SIZE = 16 * 1024 * 1024;
+            var file = event && event.target ? event.target.files[0] : event;
+            typeof(file) == 'undefined' && this.showErrors('请选择文件上传');
+            var size = file.size;
+            
+            size > MAX_SIZE && this.showErrors('文件大于16M，请上传小于16M的文件');
+            return size > MAX_SIZE ? false : true;
+        },
+        validateClass: function() {
+            var flag = $('input[name=class]').val() == '';
+            if (flag) {
+                this.showErrors('请选择门类');
+            }
+            return !flag;
+        },
+        showErrors: function(error) {
+            $('.error').html(error.toString());
+        },
+        iframSubmit: function() {
+            var iframe = $("#iframe");
+            // TODO
+            iframe.attr('action','xxx');
+            iframe.attr('target','iframe');
+            iframe[0].submit();
+        },
+        getClasses: function() {
+            var self = this;
+            $.get('http://angelclover.win:8099/docclass?action=get_all',function (response) {
+                console.info('mmmddd',response);
+                if (!!!response.error) {
+                    var array = [];
+                    var data = response.data;
+                    for (var i = 0;i < data.length;i++) {
+                        array.push('<li data-id="'+ data[i].id +'"><a href="#">' + data[i].name + '</a></li>');
+                    }
+
+                    $('.dropdown-menu').append(array.join(''));
+                    self.bindEvent();
+                }
+            });
+        },
+        bindEvent: function() {
+            $('#class-dropdown .dropdown-menu li').on('click',function () {
+                var id = $(this).attr('data-id');
+                var name = $(this).find('a').text();
+
+                $('.dropdown .selected-name').text(name);
+                $(this).parent().hide();
+                console.log('id',id);
+                $('input[name=class]').val(id);
+                return false;
+            });
+            $('button[data-toggle="dropdown"]').on('click',function() {
+                $('#class-dropdown .dropdown-menu').toggle();
+            })
+        }
+    }
 }
+
+module.exports.methods.getClasses();
 </script>
