@@ -1,3 +1,8 @@
+<style type="text/css">
+    .input-group {
+        margin: 10px 0;
+    }
+</style>
 <template>
     <div id="login-form">
         <div class="input-group">
@@ -8,7 +13,7 @@
             <span class="input-group-addon" id="basic-addon2">密码</span>
             <input type="text" name="password" class="form-control" placeholder="请输入密码" aria-describedby="basic-addon2">
         </div>
-        <div id="aaa">
+        <div>
             <button type="button" id="loginButton" data-loading-text="Loading..." class="btn btn-primary" autocomplete="off" v-on:click="submit">
               登录
             </button>
@@ -50,15 +55,16 @@ module.exports = {
             return flag;
         },
         login: function(option) {
-           $.post('http://angelclover.win:8099/login',option,function (response) {
+            var self = this;
+            $.post('http://angelclover.win:8099/login',option,function (response) {
                 console.info('mmmddd',response);
                 if (!!!response.error) {
                     // TODO 需要在路右侧保存session
                     window.location.href = '/'; // 跳转到首页
                 } else {
-                    this.showErrors(response.msg);
+                    self.showErrors(response.message);
                 }
-            })
+            });
         },
         login: function(option) {
             var self = this;
