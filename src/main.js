@@ -21,8 +21,10 @@ router.map(routeConfig)
 const app = Vue.extend(require('./app.vue'))
 router.start(app, '#app')
 
+// TODO 
+// 需要根据token的变化来决定跳转到哪个路由
 router.redirect({
-    '/': '/home'
+    '/': '/login'
 })
 
 
