@@ -52,13 +52,25 @@ module.exports = {
         login: function(option) {
            $.post('http://angelclover.win:8099/login',option,function (response) {
                 console.info('mmmddd',response);
-                if (!!response.error) {
+                if (!!!response.error) {
                     // TODO 需要在路右侧保存session
                     window.location.href = '/'; // 跳转到首页
                 } else {
                     this.showErrors(response.msg);
                 }
             })
+        },
+        login: function(option) {
+            var self = this;
+            $.post('http://angelclover.win:8099/login',option,function (response) {
+                    console.info('mmmddd',response);
+                    if (!!!response.error) {
+                        // TODO 需要在路右侧保存session
+                        window.location.href = '/'; // 跳转到首页
+                    } else {
+                        self.showErrors(response.message);
+                    }
+                });
         },
         showErrors: function(error) {
             $('.error').html(error.toString());
