@@ -9,7 +9,7 @@ export default{
     data: {
         gridColumns: ['customerId', 'companyName', 'contactName', 'phone'],
         gridData: [],
-        apiUrl: "angelclover.win:8099/docclass?action=get_all"
+        apiUrl: "angelclover.win:8080/docclass?action=get_all"
         //apiUrl: "http://angelclover.win:8099/user?action=get&user_name=test"
     },
     ready: function() {
@@ -24,7 +24,7 @@ export default{
                 console.log(res)
             })
             */
-            var url = "http://angelclover.win:8099/docclass?action=get_all"
+            var url = "http://angelclover.win:8080/docclass?action=get_all"
             //var url = "http://angelclove.win:8099/user?action=get&user_name=root"
             this.$http.get(url).then((response) => {
                     top_json = JSON.parse(response.data)

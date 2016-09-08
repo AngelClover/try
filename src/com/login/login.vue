@@ -54,9 +54,10 @@ module.exports = {
             }
             return flag;
         },
+        /*
         login: function(option) {
             var self = this;
-            $.post('http://angelclover.win:8099/login',option,function (response) {
+            $.post('http://angelclover.win:8080/login',option,function (response) {
                 console.info('mmmddd',response);
                 if (!!!response.error) {
                     // TODO 需要在路右侧保存session
@@ -66,9 +67,10 @@ module.exports = {
                 }
             });
         },
+        */
         login: function(option) {
             var self = this;
-            $.post('http://angelclover.win:8099/login',option,function (response) {
+            $.post('http://angelclover.win:8080/login',option,function (response) {
                     console.info('mmmddd',response);
                     if (!!!response.error) {
                         // TODO 需要在路右侧保存session

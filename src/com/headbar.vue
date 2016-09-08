@@ -28,6 +28,8 @@ nav(class="navbar navbar-default")
                     a(v-link="{path:'/explore'}") 档案查阅
                 li
                     a(v-link="{path:'/upload'}") 档案登记
+                li
+                    a(v-link="{path:'/viewlog'}") 日志记录
                 //li
                     //a(href="#") 档案统计
                 li(class="dropdown")

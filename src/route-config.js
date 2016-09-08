@@ -5,6 +5,7 @@ import about from './com/about.vue'
 import upload from './com/upload.vue'
 import explorer from './com/explore.vue'
 import docclass from './com/docclass.vue'
+import viewlog from './com/viewlog.vue'
 
 export default{
     'home': {
@@ -26,5 +27,9 @@ export default{
     },
     'docclass': {
         component: docclass
+    },
+    'viewlog': {
+        component: viewlog
     }
+
 }

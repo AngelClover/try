@@ -11,9 +11,11 @@
     }
 </style>
 <template>
-    <form id="file-form" action="http://angelclover.win:8099/login" method="post" enctype="multipart/form-data">
+    <form id="file-form" action="http://angelclover.win:8080/doc" method="post" enctype="multipart/form-data">
         <input name="file" type="file" value="上传文件" v-on:change="checkFile">
-        <input name="class" type="hidden">
+        <input name="action" type="hidden" value="upload">
+        <input name="username" type="hidden" value="test">
+        <input name="docclass_id" type="hidden">
         
         <div class="dropdown" id="class-dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -55,7 +57,7 @@ module.exports = {
             return size > MAX_SIZE ? false : true;
         },
         validateClass: function() {
-            var flag = $('input[name=class]').val() == '';
+            var flag = $('input[name=docclass_id]').val() == '';
             if (flag) {
                 this.showErrors('请选择门类');
             }
@@ -73,7 +75,7 @@ module.exports = {
         },
         getClasses: function() {
             var self = this;
-            $.get('http://angelclover.win:8099/docclass?action=get_all',function (response) {
+            $.get('http://angelclover.win:8080/docclass?action=get_all&username=test',function (response) {
                 console.info('mmmddd',response);
                 if (!!!response.error) {
                     var array = [];
@@ -82,7 +84,7 @@ module.exports = {
                         array.push('<li data-id="'+ data[i].id +'"><a href="#">' + data[i].name + '</a></li>');
                     }
 
-                    $('.dropdown-menu').append(array.join(''));
+                    $('#class-dropdown .dropdown-menu').append(array.join(''));
                     self.bindEvent();
                 }
             });
@@ -95,7 +97,7 @@ module.exports = {
                 $('.dropdown .selected-name').text(name);
                 $(this).parent().hide();
                 console.log('id',id);
-                $('input[name=class]').val(id);
+                $('input[name=docclass_id]').val(id);
                 return false;
             });
             $('button[data-toggle="dropdown"]').on('click',function() {
