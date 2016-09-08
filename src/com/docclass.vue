@@ -1,15 +1,77 @@
 <template>
-    this is doc class page</br>
-    {{gridData}}
+    <!--this is doc class page<br/>-->
+    <div>
+        <fieldset> 
+            <legend>
+                创建新门类
+            </legend>
+            <div class="form-group">
+                <label>门类名:</label>
+                <input type="text" v-model="newclass.name"/>
+            </div>
+            <div class="form-group">
+                <label>门类父节点编号:</label>
+                <label type="text"> {{newclass.parent_id}}</label>
+            </div>
+            <!--
+            <div class="form-group">
+                <label>Sex:</label>
+                <select v-model="newPerson.sex">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+            -->
+            <div class="form-group">
+                <label>门类父节点:</label>
+                <select v-model="newclass.parent_id" >
+                    <option v-for="pclass in gridData" value={{pclass.id}} >{{pclass.name}}</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label></label>
+                <button @click="createclass">Create</button>
+            </div>
+        </fieldset>
+        <table  class="table table-bordered">
+            <thead>
+                <tr>
+                    <td> 门类编号 </td>
+                    <td> 门类名称 </td>
+                    <td> 门类父节点编号 </td>
+                    <td> </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="cl in gridData">
+                    <td>{{cl.id}}</td>
+                    <td>{{cl.name}}</td>
+                    <td>{{cl.parent_id}}</td>
+                    <td :class="'text-center'"><button @click="deleteclass($index)">Delete</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <br/>
+    <div v-if="error > 0" color="red">
+        Error Num: {{error}}<br/>
+        Error Message: {{errmsg}}<br/>
+    </div>
 </template>
 
 <script>
 import Vue from 'vue'
 export default{
     data: {
-        gridColumns: ['customerId', 'companyName', 'contactName', 'phone'],
+        newclass:{
+            name: "新门类名称",
+            parent_id: 0
+        },
+        gridColumns: ['id', 'name', 'parent_id', 'customizable'],
         gridData: [],
-        apiUrl: "angelclover.win:8080/docclass?action=get_all"
+        error: 0,
+        errmsg:""
+        //apiUrl: "angelclover.win:8080/docclass?action=get_all"
         //apiUrl: "http://angelclover.win:8099/user?action=get&user_name=test"
     },
     ready: function() {
@@ -18,32 +80,53 @@ export default{
     },
     methods: {
         getDocclass: function() {
-            //Vue.http.get(this.apiUrl)
-            /*
-            $.get('angelclover.win:8099/docclass?action=get_all', (res) =>{
-                console.log(res)
+            var _this = this
+            var url = "http://angelclover.win:8080/docclass?action=get_all&username=test";
+            console.log(url)
+            $.get('http://angelclover.win:8080/docclass?action=get_all&username=test',function (response) {
+                console.info('asd', response)
+                if (!!!response.error){
+                    console.info('asd', response.data)
+                    _this.$set('gridData', response.data)
+                }else{
+                    _this.$set('error', response.error)
+                    _this.$set('errmsg', response.message)
+                }
             })
-            */
-            var url = "http://angelclover.win:8080/docclass?action=get_all"
-            //var url = "http://angelclove.win:8099/user?action=get&user_name=root"
-            this.$http.get(url).then((response) => {
-                    top_json = JSON.parse(response.data)
-                    element_json = JSON.parse(top_json.data)
-                    this.$set('gridData', element_json)
-                    console.log(this.gridData.toString())
-                    console.log(this.gridData[0][0])
-                    console.log(this.gridData[0][1])
-                    console.log(this.gridData[1])
-                    //console.log(JSON.stringify(this.gridData))
-                    console.log(response.text())
-                    console.log(response.data);
-            }, (response) => {
-                console.log('errCallback')
-                console.log(response.status)
-                console.log(response.text())
-                console.log(response)
+        },
+        deleteclass: function(index){
+            //this.gridData.splice(index,1);
+            var url = 'http://angelclover.win:8080/docclass?action=del&username=test&name=' + this.gridData[index].name + '&docclass_id=' + this.gridData[index].id + '&parent_id=' + this.gridData[index].parent_id;
+            var _this = this
+            console.info('delete class', url);
+            $.get(url, function(response){
+                console.info('delete class res:', response)
+              if (!!!response.error){
+                  console.info('delete succ')
+                      _this.getDocclass()
+              }else{
+                _this.$set('error', response.error)
+                _this.$set('errmsg', response.message)
+              }
             })
+        },
+        createclass: function(){
+            var _this = this
+            var url = 'http://angelclover.win:8080/docclass?action=add&username=test&name=' + this.newclass.name + '&parent_id=' + this.newclass.parent_id; 
+            console.info('add class', url)
+            $.get(url, function(response){
+                console.info('add class res:', response)
+                if (!!!response.error){
+                    console.info('add succ')
+                      _this.getDocclass()
+                }else{
+                    _this.$set('error', response.error)
+                        _this.$set('errmsg', response.message)
+                }
+            })
+
         }
+        
     }
 }
 </script>
