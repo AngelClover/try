@@ -58,9 +58,8 @@
         Error Message: {{errmsg}}<br/>
     </div>
 </template>
-
 <script>
-import Vue from 'vue'
+import {get_username, get_id, get_token} from '../vuex/getters'
 export default{
     data: {
         newclass:{
@@ -74,16 +73,37 @@ export default{
         //apiUrl: "angelclover.win:8080/docclass?action=get_all"
         //apiUrl: "http://angelclover.win:8099/user?action=get&user_name=test"
     },
+    vuex: {
+        getters: {
+            getName: get_username,
+            getId: get_id,
+            getToken: get_token
+        }
+    },
     ready: function() {
         this.getDocclass()
         //console.log(this.girdData)
     },
+    /*
+    computed: {
+        getName: function(){
+            return this.$store.state.name
+        },
+        getToken: function(){
+            return this.$store.state.token
+        },
+        getId: function(){
+            return this.$store.state.id
+        }
+    },
+    */
     methods: {
         getDocclass: function() {
             var _this = this
-            var url = "http://angelclover.win:8080/docclass?action=get_all&username=test";
+            console.info(_this)
+            var url = "http://angelclover.win:8080/docclass?action=get_all&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token
             console.log(url)
-            $.get('http://angelclover.win:8080/docclass?action=get_all&username=test',function (response) {
+            $.get(url, function (response) {
                 console.info('asd', response)
                 if (!!!response.error){
                     console.info('asd', response.data)
@@ -93,10 +113,15 @@ export default{
                     _this.$set('errmsg', response.message)
                 }
             })
+            //console.info('vuex getdocs', _this.getName())
+            //console.info('vuex getters', _this.$store.state.name)
+            //console.info('vuex getters', _this.$store.state.id)
+            //console.info('vuex getters', _this.$store.state.token)
         },
         deleteclass: function(index){
             //this.gridData.splice(index,1);
-            var url = 'http://angelclover.win:8080/docclass?action=del&username=test&name=' + this.gridData[index].name + '&docclass_id=' + this.gridData[index].id + '&parent_id=' + this.gridData[index].parent_id;
+            var _this = this
+            var url = "http://angelclover.win:8080/docclass?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&name=" + this.gridData[index].name + "&docclass_id=" + this.gridData[index].id + "&parent_id=" + this.gridData[index].parent_id;
             var _this = this
             console.info('delete class', url);
             $.get(url, function(response){
@@ -112,7 +137,7 @@ export default{
         },
         createclass: function(){
             var _this = this
-            var url = 'http://angelclover.win:8080/docclass?action=add&username=test&name=' + this.newclass.name + '&parent_id=' + this.newclass.parent_id; 
+            var url = "http://angelclover.win:8080/docclass?action=add&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&name=" + this.newclass.name + "&parent_id=" + this.newclass.parent_id; 
             console.info('add class', url)
             $.get(url, function(response){
                 console.info('add class res:', response)

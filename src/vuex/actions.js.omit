@@ -8,13 +8,20 @@ export const hideError = ({dispatch}) => {
       dispatch('SET_ERROR_VISIBLE', false)
 }
 
+/*
 function doLogin(username, password){
     return username=='root' && password=='root' ||
         username=='test' && password=='test'
 }
+*/
 
-export const login = ({dispatch}, username, password) => {
-    if (username && password) {
+export const login_action = () => {
+    var user = {}
+    user.username = "test"
+    user.token = "test"
+    if (user.username && user.token) {
+        dispatch(SET_USERINFO, user)
+        /*
         doLogin(username, password).done(res => {
             dispatch('SET_USERNAME', res.username)
                 dispatch('SET_LOGGED_IN', true)
@@ -24,5 +31,9 @@ export const login = ({dispatch}, username, password) => {
                 setError({dispatch}, error)
                 showError({dispatch})
         })
+        */
+    }else{
+        dispatch(DELETE_USER_INFO)
+        dispatch(SET_MSGS, ["login invalid"])
     }
 }

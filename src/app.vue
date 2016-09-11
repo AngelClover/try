@@ -12,7 +12,7 @@ div(class="container")
 import head from  './com/headbar.vue'
 import side from  './com/sidebar.vue'
 //import main from  './com/maincontent.vue'
-//import store from './vuex/store'
+import store from './vuex/store'
 export default {
     data () {
         return {
@@ -23,7 +23,7 @@ export default {
         'headbar' : head,
         'sidebar' : side
     },
-    //store
+    store: store
 }
 </script>
 

@@ -6,6 +6,7 @@ import upload from './com/upload.vue'
 import explorer from './com/explore.vue'
 import docclass from './com/docclass.vue'
 import viewlog from './com/viewlog.vue'
+import users from './com/users.vue'
 
 export default{
     'home': {
@@ -30,6 +31,9 @@ export default{
     },
     'viewlog': {
         component: viewlog
+    },
+    'users': {
+        component: users
     }
 
 }

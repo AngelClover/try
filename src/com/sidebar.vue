@@ -13,6 +13,10 @@ ul(class="nav nav-list bs-docs-sidenav")
         a(v-link="{path:'/docclass'}")
             i(class="icon-chevron-right")
                 门类列表 
+    li
+        a(v-link="{path:'/users'}")
+            i(class="icon-chevron-right")
+                用户列表 
 </template>
 
 <script>

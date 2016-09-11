@@ -41,7 +41,7 @@ nav(class="navbar navbar-default")
                         li
                             a(v-link="{path:'/docclass'}") 门类设置
                         li
-                            a(href="#") 报表设置
+                            a(v-link="{path:'/users'}") 用户设置
             ul(class="nav navbar-nav navbar-right")
                 li(class="active dropdown")
                     a test

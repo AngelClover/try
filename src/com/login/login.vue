@@ -24,12 +24,20 @@
 
 
 <script>
+import login_action from '../../vuex/actions'
+import {SET_USERINFO} from '../../vuex/store'
+
 module.exports = {
     el:'#login-form',
     name: 'addOrganization',
     data:{
         username:'123',
         password:'456',
+    },
+    vuex: {
+        actions: {
+            loginS: login_action
+        }
     },
     methods: {
         submit: function(event){
@@ -74,9 +82,17 @@ module.exports = {
                     console.info('mmmddd',response);
                     if (!!!response.error) {
                         // TODO 需要在路右侧保存session
-                        window.location.href = '/'; // 跳转到首页
+                        var user = {}
+                        user.username = option.username
+                        user.token = response.data.token
+                        console.log(self)
+                        //self.loginS(user)
+                        self.$store.dispatch(SET_USERINFO, user)
+                        //router.go('/')
+                        //window.location.href = '/'; // 跳转到首页
                     } else {
                         self.showErrors(response.message);
+                        self.$store.dispatch(DELETE_USER_INFO, user)
                     }
                 });
         },
