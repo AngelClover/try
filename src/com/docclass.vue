@@ -59,7 +59,7 @@
     </div>
 </template>
 <script>
-import {get_username, get_id, get_token} from '../vuex/getters'
+//import {get_username, get_id, get_token} from '../vuex/getters'
 export default{
     data: {
         newclass:{

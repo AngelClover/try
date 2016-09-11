@@ -24,7 +24,7 @@
 
 
 <script>
-import login_action from '../../vuex/actions'
+//import login_action from '../../vuex/actions'
 import {SET_USERINFO} from '../../vuex/store'
 
 module.exports = {
