@@ -7,6 +7,7 @@ import explorer from './com/explore.vue'
 import docclass from './com/docclass.vue'
 import viewlog from './com/viewlog.vue'
 import users from './com/users.vue'
+import borrow from './com/borrow.vue'
 
 export default{
     'home': {
@@ -34,6 +35,9 @@ export default{
     },
     'users': {
         component: users
+    },
+    'borrow': {
+        component: borrow
     }
 
 }

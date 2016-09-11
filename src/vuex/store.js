@@ -9,7 +9,8 @@ const state = {
     //password: '',
     name: '',
     msgs: [],
-    error: 0
+    error: 0,
+    isadmin: false
 }
 export const SET_USERINFO = 'SET_USERINFO'
 export const DELETE_USER_INFO = 'DELETE_USER_INFO'
@@ -22,6 +23,7 @@ const mutations = {
       state.id = user.id
       state.token = user.token
       state.name = user.username
+      state.isadmin = user.username == 'root'
       //state.password = user.password
     } catch (err) {
       console.log(err)

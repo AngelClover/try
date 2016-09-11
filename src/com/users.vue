@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if='$store.state.isadmin'>
         <fieldset> 
             <legend>
                 添加新用户
@@ -58,10 +58,24 @@ export default {
     ready: function(){
         this.getUsers()
     },
+    router: {
+        canActivate: function(){
+            return this.$store.state.name != ""
+        },
+        activate: function(trans){
+            this.getUsers()
+            trans.next()
+        }
+    },
     methods:{
         getUsers: function(){
             var _this = this
-            var username = "root"
+            if (_this.$store.state.isadmin != true){
+                _this.$set('error', 1)
+                _this.$set('errmsg', 'no right to view the list')
+                return false;
+            }
+            var username = _this.$store.state.name
             var reqUrl = "http://angelclover.win:8080/user?"
             var url = reqUrl + "action=get_all&username=" + username;
             console.info('get all users', url)
@@ -80,7 +94,7 @@ export default {
             var _this = this
             var create_user = "test"
             var reqUrl = "http://angelclover.win:8080/user?"
-            var url = reqUrl + "action=add&username=" + this.newuser.name + "&password=" + this.newuser.password + "&create_user=" + create_user;
+            var url = reqUrl + "action=add&username=" + this.newuser.name + "&password=" + this.newuser.password + "&create_user=" + _this.$store.state.name;
             console.info('add user', url)
             $.get(url, function(res){
                 console.info('add user res:', res);

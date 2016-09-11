@@ -10,20 +10,31 @@
         margin: 10px 0;
     }
 </style>
+
 <template>
+    <div id="upload-form">
     <form id="file-form" action="http://angelclover.win:8080/doc" method="post" enctype="multipart/form-data">
         <input name="file" type="file" value="上传文件" v-on:change="checkFile">
         <input name="action" type="hidden" value="upload">
         <input name="username" type="hidden" value="test">
         <input name="docclass_id" type="hidden">
         
+        <!--
         <div class="dropdown" id="class-dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 <span class="selected-name">选择部门</span>
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                <li v-for="cl in classData" data-id={{cl.id}}><a href="#">{{cl.name}}</a></li>
             </ul>
+        </div>
+        -->
+        <div class="form-group">
+            <label>选择门类:</label>
+            <select v-model="docclass_id" >
+                <li v-for="cl in classData" data-id={{cl.id}}><a href="#">{{cl.name}}</a></li>
+            </select>
         </div>
 
         <button type="button" id="updateButton" data-loading-text="Loading..." class="btn btn-primary" autocomplete="off" v-on:click="submit">
@@ -32,23 +43,22 @@
         <div class="error"></div>
     </form>
     <iframe id="iframe" name="iframe" width="1" height="1" style="display:none"></iframe>
+    </div>
 
 </template>
 
 <script>
-module.exports = {
-    el:'#login-form',
-    name: 'addOrganization',
-    router: {
-        canActivate: function(){
-            return this.$store.state.name != ""
-        },
-        activate: function(trans){
-            this.getClasses()
-            trans.next()
-        }
+//module.exports = {
+export default{
+    el:'upload-form',
+    //name: 'addOrganization',
+    data: {
+        classData: []
     },
     methods: {
+        ready: function(){
+            this.getClasses();
+        },
         submit: function() {
             var ele = $("input[name=file]")[0];
             if (!this.checkFile(ele.files[0]) || !this.validateClass()) return false;
@@ -84,19 +94,25 @@ module.exports = {
         },
         getClasses: function() {
             var self = this;
+            var _this = this;
+            console.log('in getClasses')
             $.get('http://angelclover.win:8080/docclass?action=get_all&username=test',function (response) {
-                console.info('mmmddd',response);
+                console.info('mmmddd getClass',response);
                 if (!!!response.error) {
                     var array = [];
                     var data = response.data;
+                    console.info('test', _this)
+                    _this.$set('classData', data)
+                        /*
                     for (var i = 0;i < data.length;i++) {
                         array.push('<li data-id="'+ data[i].id +'"><a href="#">' + data[i].name + '</a></li>');
                     }
-
                     $('#class-dropdown .dropdown-menu').append(array.join(''));
+                    */
                     self.bindEvent();
                 }
             });
+            console.log('out getClasses')
         },
         bindEvent: function() {
             $('#class-dropdown .dropdown-menu li').on('click',function () {
@@ -116,5 +132,5 @@ module.exports = {
     }
 }
 
-module.exports.methods.getClasses();
+//module.exports.methods.getClasses();
 </script>

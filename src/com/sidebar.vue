@@ -17,6 +17,14 @@ ul(class="nav nav-list bs-docs-sidenav")
         a(v-link="{path:'/users'}")
             i(class="icon-chevron-right")
                 用户列表 
+    li
+        a(v-link="{path:'/viewlog'}")
+            i(class="icon-chevron-right")
+                日志记录 
+    li
+        a(v-link="{path:'/borrow'}")
+            i(class="icon-chevron-right")
+                权限授予
 </template>
 
 <script>

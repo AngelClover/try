@@ -1,6 +1,6 @@
 <template>
     <!--this is doc class page<br/>-->
-    <div>
+    <div v-if="$store.state.isadmin">
         <fieldset> 
             <legend>
                 创建新门类
@@ -33,6 +33,8 @@
                 <button @click="createclass">Create</button>
             </div>
         </fieldset>
+    </div>
+    <div>
         <table  class="table table-bordered">
             <thead>
                 <tr>
@@ -69,7 +71,7 @@ export default{
         gridColumns: ['id', 'name', 'parent_id', 'customizable'],
         gridData: [],
         error: 0,
-        errmsg:""
+        errmsg:"",
         //apiUrl: "angelclover.win:8080/docclass?action=get_all"
         //apiUrl: "http://angelclover.win:8099/user?action=get&user_name=test"
     },
@@ -82,8 +84,21 @@ export default{
         }
     },
     */
+    router: {
+        canActivate: function(){
+            return this.$store.state.name != ""
+        },
+        activate: function(trans){
+            this.getDocclass()
+            trans.next()
+        }
+    },
     ready: function() {
-        this.getDocclass()
+        if (this.$store.state.username != "" && this.$store.state.token != ""){
+            this.getDocclass()
+        }else{
+            this.$router.go('/login')
+        }
         //console.log(this.girdData)
     },
     /*
@@ -123,6 +138,11 @@ export default{
         deleteclass: function(index){
             //this.gridData.splice(index,1);
             var _this = this
+            if (_this.$store.state.isadmin != true){
+                _this.$set('error', 1)
+                _this.$set('errmsg', 'no right to delete')
+                return false
+            }
             var url = "http://angelclover.win:8080/docclass?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&name=" + this.gridData[index].name + "&docclass_id=" + this.gridData[index].id + "&parent_id=" + this.gridData[index].parent_id;
             var _this = this
             console.info('delete class', url);

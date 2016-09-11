@@ -29,6 +29,10 @@ router.beforeEach(function(trans){
     }
 })
 */
+router.afterEach(function(trans){
+    //trans.to.matched[0].ready()
+    //this.ready()
+})
 
 router.map(routeConfig)
 const app = Vue.extend(require('./app.vue'))
