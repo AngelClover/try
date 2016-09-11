@@ -73,6 +73,7 @@ export default{
         //apiUrl: "angelclover.win:8080/docclass?action=get_all"
         //apiUrl: "http://angelclover.win:8099/user?action=get&user_name=test"
     },
+    /*
     vuex: {
         getters: {
             getName: get_username,
@@ -80,6 +81,7 @@ export default{
             getToken: get_token
         }
     },
+    */
     ready: function() {
         this.getDocclass()
         //console.log(this.girdData)

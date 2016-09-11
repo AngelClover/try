@@ -34,11 +34,13 @@ module.exports = {
         username:'123',
         password:'456',
     },
+    /*
     vuex: {
         actions: {
             loginS: login_action
         }
     },
+    */
     methods: {
         submit: function(event){
             var option = {
@@ -88,7 +90,7 @@ module.exports = {
                         console.log(self)
                         //self.loginS(user)
                         self.$store.dispatch(SET_USERINFO, user)
-                        //router.go('/')
+                        self.$router.go('/home')
                         //window.location.href = '/'; // 跳转到首页
                     } else {
                         self.showErrors(response.message);
