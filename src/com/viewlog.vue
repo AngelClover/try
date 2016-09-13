@@ -30,7 +30,7 @@
         Error Num: {{error}}<br/>
         Error Message: {{message}}<br/>
     </div>
-    {{$store.state.isadmin}}
+    <!--{{$store.state.isadmin}}-->
 </template>
 
 <script>

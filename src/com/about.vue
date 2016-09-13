@@ -1,7 +1,7 @@
 <template>
 	<div>
-		<h1>About</h1>
-		<p>This is the tutorial about vue-router.</p>
+		<h1>关于</h1>
+		<p>请联系作者</p>
 	</div>
 </template>
 

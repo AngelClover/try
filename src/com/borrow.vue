@@ -38,10 +38,10 @@
             </thead>
             <tbody>
                 <tr v-for="cl in borrowData">
-                    <td>{{cl.username}}</td>
-                    <td>{{cl.fileid}}</td>
-                    <td>{{cl.starttime}}</td>
-                    <td>{{cl.endtime}}</td>
+                    <td>{{cl.user_id}}</td>
+                    <td>{{cl.doc_id}}</td>
+                    <td>{{cl.start_time}}</td>
+                    <td>{{cl.end_time}}</td>
                     <td :class="'text-center'"><button @click="deleteborrow($index)">Delete</button></td>
                 </tr>
             </tbody>
@@ -66,8 +66,7 @@ export default{
             starttime: "",
             endtime: "forever",
         },
-        borrowData: {
-        },
+        borrowData: [] ,
         error: 0,
         message: "",
     },
@@ -89,18 +88,22 @@ export default{
                 /*
             if (_this.$store.state.isadmin != true){
                 _this.$set('error', 1)
-                _this.$set('errmsg', 'no right to operate')
+                _this.$set('message', 'no right to operate')
                 return false;
             }
             */
+            var end = _this.newborrow.endtime
+            if (end == ""){
+                end = "forever"
+            }
             var _this = this
-            var url = "http://angelclover.win:8080/borrow?action=add&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&to_username=" + this.newborrow.toname + "&to_doc_id_list=" + _this.newborrow.file_id + "&start_time=" + _this.newborrow.starttime + "&end_time=" + _this.newborrow.endtime; 
+            var url = "http://angelclover.win:8080/borrow?action=add&username=" + this.$store.state.name + "&token=" + this.$store.state.token + "&to_username=" + this.newborrow.toname + "&to_doc_id_list=" + this.newborrow.fileid + "&start_time=" + (_this.newborrow.starttime == undefined? "" : _this.newborrow.starttime) + "&end_time=" + end; 
             console.info('add borrow', url)
             $.get(url, function(response){
                 console.info('add borrow res:', response)
                 if (!!!response.error){
                     console.info('add succ')
-                      _this.getDocclass()
+                      _this.getlist()
                 }else{
                     _this.$set('error', response.error)
                     _this.$set('message', response.message)
@@ -112,7 +115,7 @@ export default{
             var _this = this
             if (_this.$store.state.isadmin != true){
                 _this.$set('error', 1)
-                _this.$set('errmsg', 'no right to view the list')
+                _this.$set('message', 'no right to view the list')
                 return false;
             }
             var reqUrl = "http://angelclover.win:8080/borrow?"
@@ -120,10 +123,11 @@ export default{
             console.info('borrow list ', url)
             $.get(url, function(res){
                 console.info('borrow list res:', res);
-                _this.setMessage(res)
+                _this.$set('error', res.error)
+                _this.$set('message', res.message)
                 if (!!!res.error){
                     console.log('succ')
-                    //if (_this.error == 0 && _this.errmsg == ""){
+                    //if (_this.error == 0 && _this.message == ""){
                         _this.$set('borrowData', res.data)
                     //}
                 }
@@ -134,16 +138,16 @@ export default{
             var _this = this
             if (_this.$store.state.isadmin != true){
                 _this.$set('error', 1)
-                _this.$set('errmsg', 'no right to delete')
+                _this.$set('message', 'no right to delete')
                 return false
             }
-            var url = "http://angelclover.win:8080/borrow?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&auth_id=" + _this.borrowData[index].auth_id;
+            var url = "http://angelclover.win:8080/borrow?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&auth_id=" + _this.borrowData[index].id;
             console.info('delete borrow', url);
             $.get(url, function(response){
                 console.info('delete borrow res:', response)
               if (!!!response.error){
                   console.info('delete succ')
-                      _this.getDocclass()
+                      _this.getlist()
               }else{
                 _this.$set('error', response.error)
                 _this.$set('message', response.message)

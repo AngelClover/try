@@ -15,8 +15,11 @@
         <input name="file" type="file" value="上传文件" v-on:change="checkFile">
         <input name="action" type="hidden" value="upload">
         <input name="username" type="hidden" value="test">
-        <input name="docclass_id" type="hidden">
+        <label>门类编号:</label>
+        <input name="docclass_id" value='0'>
         
+        <!--
+        <input name="docclass_id" type="hidden">
         <div class="dropdown" id="class-dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 <span class="selected-name">选择部门</span>
@@ -25,13 +28,16 @@
             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
             </ul>
         </div>
+        -->
 
         <button type="button" id="updateButton" data-loading-text="Loading..." class="btn btn-primary" autocomplete="off" v-on:click="submit">
           上传
         </button>
         <div class="error"></div>
     </form>
+    <!--
     <iframe id="iframe" name="iframe" width="1" height="1" style="display:none"></iframe>
+    -->
 
 </template>
 
@@ -53,8 +59,12 @@ module.exports = {
             var ele = $("input[name=file]")[0];
             if (!this.checkFile(ele.files[0]) || !this.validateClass()) return false;
             // 解决跨域提交问题，后续可以使用被注释的代码
-            $('#file-form')[0].submit();
+            var _this = this;
+            $('#file-form')[0].submit(function (){
+                _this.$router.go('/upload')
+            })
             //this.iframSubmit();
+            return false;
         },
         checkFile: function(event) {
             var MAX_SIZE = 16 * 1024 * 1024;
@@ -93,6 +103,7 @@ module.exports = {
                         array.push('<li data-id="'+ data[i].id +'"><a href="#">' + data[i].name + '</a></li>');
                     }
 
+                    console.info('array info', array.join('')); 
                     $('#class-dropdown .dropdown-menu').append(array.join(''));
                     self.bindEvent();
                 }

@@ -51,6 +51,9 @@ nav(class="navbar navbar-default")
                     ul(class="dropdown-menu")
                         li 口令修改
                 li
+                    a {{$store.state.name}}
+
+                li
                     a(class="navbar-header", v-on:click="logout") 登出
                 li 
                     a(class="navbar-header", v-link="{path:'/about'}") 关于
