@@ -15,10 +15,10 @@
         <input name="file" type="file" value="上传文件" v-on:change="checkFile">
         <input name="action" type="hidden" value="upload">
         <input name="username" type="hidden" value="test">
-        <label>门类编号:</label>
-        <input name="docclass_id" value='0'>
+        <!-- <label>门类编号:</label>
+        <input name="docclass_id" value='0'> -->
         
-        <!--
+        
         <input name="docclass_id" type="hidden">
         <div class="dropdown" id="class-dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -28,7 +28,7 @@
             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
             </ul>
         </div>
-        -->
+        
 
         <button type="button" id="updateButton" data-loading-text="Loading..." class="btn btn-primary" autocomplete="off" v-on:click="submit">
           上传
@@ -45,14 +45,15 @@
 module.exports = {
     el:'#login-form',
     name: 'addOrganization',
-    router: {
+    route: {
         canActivate: function(){
-            return this.$store.state.name != ""
         },
         activate: function(trans){
-            this.getClasses()
             trans.next()
         }
+    },
+    ready: function() {
+        this.getClasses();
     },
     methods: {
         submit: function() {
@@ -127,5 +128,4 @@ module.exports = {
     }
 }
 
-module.exports.methods.getClasses();
 </script>
