@@ -70,12 +70,12 @@ export default{
         error: 0,
         message: "",
     },
-    router: {
+    route: {
         canActivate: function(){
-            return this.$store.state.name != ""
+            //return this.$parent.$store.state.name != ""
         },
         activate: function(trans){
-            this.getlist()
+            //this.$parent.getlist()
             trans.next()
         }
     },

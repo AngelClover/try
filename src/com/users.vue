@@ -58,12 +58,12 @@ export default {
     ready: function(){
         this.getUsers()
     },
-    router: {
+    route: {
         canActivate: function(){
-            return this.$store.state.name != ""
+            //return this.$store.state.name != ""
         },
         activate: function(trans){
-            this.getUsers()
+            //this.getUsers()
             trans.next()
         }
     },

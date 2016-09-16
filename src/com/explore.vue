@@ -35,12 +35,12 @@ export default{
         error: 0,
         message: ""
     },
-    router: {
+    route: {
         canActivate: function(){
-            return this.$store.state.name != ""
+            //return this.$store.state.name != ""
         },
         activate: function(trans){
-            this.getDocclass()
+            //this.getDocclass()
             trans.next()
         }
     },

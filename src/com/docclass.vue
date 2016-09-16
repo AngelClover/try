@@ -84,12 +84,13 @@ export default{
         }
     },
     */
-    router: {
+    route: {
         canActivate: function(){
-            return this.$store.state.name != ""
+            //return this.$store.state.name != ""
         },
         activate: function(trans){
-            this.getDocclass()
+                      console.log(this)
+            //this.getDocclass()
             trans.next()
         }
     },
