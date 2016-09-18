@@ -6,6 +6,10 @@ ul(class="nav nav-list bs-docs-sidenav")
             i(class="icon-chevron-right")
                 档案借阅
     li
+        a(v-link="{path:'/apply'}") 
+            i(class="icon-chevron-right")
+                借阅申请
+    li
         a(v-link="{path:'/upload'}") 
             i(class="icon-chevron-right")
                 档案登记
@@ -25,6 +29,11 @@ ul(class="nav nav-list bs-docs-sidenav")
         a(v-link="{path:'/borrow'}")
             i(class="icon-chevron-right")
                 权限授予
+    li
+        a(v-link="{path:'/approve'}")
+            i(class="icon-chevron-right")
+                权限审批
+
 </template>
 
 <script>

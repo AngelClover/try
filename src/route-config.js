@@ -8,6 +8,8 @@ import docclass from './com/docclass.vue'
 import viewlog from './com/viewlog.vue'
 import users from './com/users.vue'
 import borrow from './com/borrow.vue'
+import apply from './com/apply.vue'
+import approve from './com/approve.vue'
 
 export default{
     'home': {
@@ -38,6 +40,11 @@ export default{
     },
     'borrow': {
         component: borrow
+    },
+    'apply': {
+        component: apply
+    },
+    'approve': {
+        component: approve
     }
-
 }

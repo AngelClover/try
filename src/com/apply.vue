@@ -1,22 +1,27 @@
 <template>
-    <div>
+    <div v-if="$store.state.isadmin != true">
         <fieldset> 
+            <h2>
+                我的申请
+            </h2>
+            <!--
         <div class="form-group">
             <label>用户名:</label>
-            <input type="text" v-model="newborrow.toname"/>
+            <input type="text" v-model="newapply.toname"/>
         </div>
+        -->
         <div class="form-group">
             <label>文件编号:</label>
-            <input type="text" v-model="newborrow.fileid"/>
+            <input type="text" v-model="newapply.fileid"/>
         </div>
         <div class="form-group">
             <label>起始时间:</label>
-            <input type="text" v-model="newborrow.starttime" id="datetimepicker" data-date-format="yymmddhhiiss">
+            <input type="text" v-model="newapply.starttime" id="datetimepicker" data-date-format="yymmddhhiiss">
             <label>(不填为从现在开始)</label>
         </div>
         <div class="form-group">
             <label>结束时间:</label>
-            <input type="text" v-model="newborrow.endtime" id="datetimepicker" data-date-format="yymmddhhiiss">
+            <input type="text" v-model="newapply.endtime" id="datetimepicker" data-date-format="yymmddhhiiss">
             <label>格式:yymmddhhiiss</label>
         </div>
         <div class="form-group">
@@ -25,7 +30,7 @@
         </div>
         </fieldset> 
     </div>
-    <div>
+    <div v-if="$store.state.isadmin != true">
         <table  class="table table-bordered">
             <thead>
                 <tr>
@@ -37,12 +42,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="cl in borrowData">
+                <tr v-for="cl in applyData">
                     <td>{{cl.user_id}}</td>
                     <td>{{cl.doc_id}}</td>
                     <td>{{cl.start_time}}</td>
                     <td>{{cl.end_time}}</td>
-                    <td :class="'text-center'"><button @click="deleteborrow($index)">Delete</button></td>
+                    <td :class="'text-center'"><button @click="deleteborrow($index)">撤销</button></td>
                 </tr>
             </tbody>
         </table>
@@ -52,21 +57,17 @@
         Error Num: {{error}}<br/>
         Error Message: {{message}}<br/>
     </div>
-
-
 </template>
-
 
 <script>
 export default{
     data:{
-        newborrow: {
-            toname: "",
+        newapply: {
             fileid: 0,
             starttime: "",
             endtime: "forever",
         },
-        borrowData: [] ,
+        applyData: [] ,
         error: 0,
         message: "",
     },
@@ -80,33 +81,28 @@ export default{
         }
     },
     ready: function(){
-        this.getlist()
+        this.getmyapplylist()
     },
     methods:{
+        getmyapplylist: function(){
+            this.getlist()
+        },
         createborrow: function(){
+            var _this = this
             var end = "";
-            if (this.newborrow == undefined || this.newborrow.endtime == undefined){
+            if (_this.newapply == undefined || _this.newapply.endtime == undefined){
                 end = ""
             }else{
-                end = this.newborrow.endtime
+                end = _this.newapply.endtime
             }
-            //console.info('new borrow', this.newborrow)
-                /*
-            if (_this.$store.state.isadmin != true){
-                _this.$set('error', 1)
-                _this.$set('message', 'no right to operate')
-                return false;
-            }
-            */
-            //var end = _this.newborrow.endtime
-            if (end == ""){
+            //console.info('new appy', this.newapply)
+            if (end == undefined || end == ""){
                 end = "forever"
             }
-            var _this = this
-            var url = "http://angelclover.win:8080/borrow?action=add&username=" + this.$store.state.name + "&token=" + this.$store.state.token + "&to_username=" + this.newborrow.toname + "&to_doc_id_list=" + this.newborrow.fileid + "&start_time=" + (_this.newborrow.starttime == undefined? "" : _this.newborrow.starttime) + "&end_time=" + end; 
+            var url = "http://angelclover.win:8080/apply?action=add&username=" + this.$store.state.name + "&token=" + this.$store.state.token + "&to_doc_id_list=" + this.newapply.fileid + "&start_time=" + (_this.newapply.starttime == undefined? "" : _this.newapply.starttime) + "&end_time=" + end; 
             console.info('add borrow', url)
             $.get(url, function(response){
-                console.info('add borrow res:', response)
+                console.info('add apply res:', response)
                 if (!!!response.error){
                     console.info('add succ')
                       _this.getlist()
@@ -115,26 +111,36 @@ export default{
                     _this.$set('message', response.message)
                 }
             })
-
         },
         getlist: function(){
             var _this = this
+                /*
             if (_this.$store.state.isadmin != true){
                 _this.$set('error', 1)
                 _this.$set('message', 'no right to view the list')
                 return false;
             }
-            var reqUrl = "http://angelclover.win:8080/borrow?"
-            var url = reqUrl + "action=get_all&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token;
-            console.info('borrow list ', url)
+            */
+            var reqUrl = "http://angelclover.win:8080/apply?"
+            var act = "get"
+            if (_this.$store.state.isadmin == true){
+                act = "get_all"
+            }
+            if (_this.$store.state.name == 'root'){
+                _this.$set('error', 1)
+                _this.$set('message', 'admin account need not to see this page')
+                return
+            }
+            var url = reqUrl + "action=" + act + "&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token;
+            console.info('apply list ', url)
             $.get(url, function(res){
-                console.info('borrow list res:', res);
+                console.info('apply list res:', res);
                 _this.$set('error', res.error)
                 _this.$set('message', res.message)
                 if (!!!res.error){
                     console.log('succ')
                     //if (_this.error == 0 && _this.message == ""){
-                        _this.$set('borrowData', res.data)
+                        _this.$set('applyData', res.data)
                     //}
                 }
             })
@@ -142,15 +148,10 @@ export default{
         deleteborrow: function(index){
             //this.gridData.splice(index,1);
             var _this = this
-            if (_this.$store.state.isadmin != true){
-                _this.$set('error', 1)
-                _this.$set('message', 'no right to delete')
-                return false
-            }
-            var url = "http://angelclover.win:8080/borrow?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&auth_id=" + _this.borrowData[index].id;
-            console.info('delete borrow', url);
+            var url = "http://angelclover.win:8080/apply?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&apply_id=" + _this.applyData[index].id;
+            console.info('apply borrow', url);
             $.get(url, function(response){
-                console.info('delete borrow res:', response)
+                console.info('apply borrow res:', response)
               if (!!!response.error){
                   console.info('delete succ')
                       _this.getlist()

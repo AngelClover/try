@@ -16,7 +16,9 @@
                     <td>{{cl.name}}</td>
                     <td>{{cl.docclass_id}}</td>
                     <td>{{cl.author_id}}</td>
-                    <td :class="'text-center'"><button @click="download($index)">下载</button></td>
+                    <td :class="'text-center'">
+                        <button v-if="cl.file_type == 'jpg' || cl.file_type == 'pdf'" @click="explorer($index)">预览</button>
+                        <button v-if="cl.file_type != 'jpg && cl.file_type != 'pdf'" @click="download($index)">下载</button></td>
                 </tr>
             </tbody>
         </table>
@@ -26,14 +28,22 @@
         Error Num: {{error}}<br/>
         Error Message: {{message}}<br/>
     </div>
+    <div id="pdfexplorer" class="container">
+    </div>
+    <div id="picexplorer" class="container">
+        <img src="{{resourceurl}}" class="img-rounded"></img>
+    </div>
 </template>
 
 <script>
+import PDFObject from 'pdfobject'
 export default{
     data: {
         docData: [],
         error: 0,
-        message: ""
+        message: "",
+        filetype: "",
+        resourceurl: "",
     },
     route: {
         canActivate: function(){
@@ -46,8 +56,15 @@ export default{
     },
     ready: function(){
         this.getDoclist()
+        //this.renderpdf()
     },
     methods: {
+        renderpdf: function(){
+            var _this = this
+            //var url = "http://angelclover.win:8080/doc?action=get&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&file_id=" + "3"
+            //var url = "http://angelclover.win/files/p7_p285.pdf"
+            console.log(_this.url)
+        },
         getDoclist: function() {
             var _this = this
             console.info(_this)
@@ -73,9 +90,23 @@ export default{
             var url = "http://angelclover.win:8080/doc?action=get&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&file_id=" + _this.docData[index].id
             console.log('windown open', url)
             window.open(url)
+        },
+        explorer: function(index){
+            var _this = this
+            var url = "http://angelclover.win/files/" + _this.docData[index].filesname
+            _this.$set('resourceurl', url)
+            _this.$set('file_type', _this.docData[index].file_type)
+            console.info('explorer params:', url, _this.docData[index].file_type)
+            if (_this.docData[index].file_type == "pdf"){
+                PDFObject.embed(url, '#pdfexplorer');
+            }
         }
     }
 
 
 }
 </script>
+<style>
+.pdfobject-container { height: 800px;}
+.pdfobject { border: 1px solid #666; }
+</style>

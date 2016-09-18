@@ -38,6 +38,34 @@
     <!--
     <iframe id="iframe" name="iframe" width="1" height="1" style="display:none"></iframe>
     -->
+    <div>
+        <table  class="table table-bordered">
+            <thead>
+                <tr>
+                    <td> 档案编号 </td>
+                    <td> 档案名 </td>
+                    <td> 门类编号</td>
+                    <td> 作者id</td>
+                    <td> </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="cl in docData">
+                    <td>{{cl.id}}</td>
+                    <td>{{cl.name}}</td>
+                    <td>{{cl.docclass_id}}</td>
+                    <td>{{cl.author_id}}</td>
+                    <td :class="'text-center'">
+                        <button @click="deleteDoc($index)">删除</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <br/>
+    <div v-if="error > 0" color="red">
+        Error Num: {{error}}<br/>
+        Error Message: {{message}}<br/>
+    </div>
 
 </template>
 
@@ -45,6 +73,11 @@
 module.exports = {
     el:'#login-form',
     name: 'addOrganization',
+    data: {
+        docData: [],
+        error: 0,
+        message: "",
+    },
     route: {
         canActivate: function(){
         },
@@ -54,6 +87,7 @@ module.exports = {
     },
     ready: function() {
         this.getClasses();
+        this.getDoclist();
     },
     methods: {
         submit: function() {
@@ -64,6 +98,7 @@ module.exports = {
             $('#file-form')[0].submit(function (){
                 _this.$router.go('/upload')
             })
+            _this.$router.go('/upload')
             //this.iframSubmit();
             return false;
         },
@@ -124,7 +159,38 @@ module.exports = {
             $('button[data-toggle="dropdown"]').on('click',function() {
                 $('#class-dropdown .dropdown-menu').toggle();
             })
-        }
+        },
+        getDoclist: function() {
+            var _this = this
+            console.info(_this)
+            if (_this.$store.state.isadmin == false){
+                return
+            }
+            var url = "http://angelclover.win:8080/doc?action=get_all&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token
+            console.log(url)
+            $.get(url, function (response) {
+                console.info('doc get', response)
+                if (!!!response.error){
+                    console.info('doc get res', response.data)
+                    _this.$set('docData', response.data)
+                }else{
+                    _this.$set('error', response.error)
+                    _this.$set('message', response.message)
+                }
+            })
+        },
+        deleteDoc: function(index){
+            var _this = this;
+            var url = "http://angelclover.win:8080/doc?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&file_id=" + _this.docData[index].id;
+            console.log('delete doc: ', url)
+            $.get(url, function (response) {
+                console.info('doc del res:', response)
+                _this.$set('error', response.error)
+                _this.$set('message', response.message)
+            })
+            _this.getDoclist()
+
+        },
     }
 }
 
