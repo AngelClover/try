@@ -24,8 +24,10 @@
 
 
 <script>
-//import login_action from '../../vuex/actions'
+import {login_action} from '../../vuex/actions'
 import {SET_USERINFO} from '../../vuex/store'
+import {saveToken} from '../../auth'
+
 
 module.exports = {
     el:'#login-form',
@@ -34,13 +36,11 @@ module.exports = {
         username:'123',
         password:'456',
     },
-    /*
     vuex: {
         actions: {
             loginS: login_action
         }
-    },
-    */
+    }, 
     methods: {
         submit: function(event){
             var option = {
@@ -51,7 +51,6 @@ module.exports = {
                 this.showErrors('用户名或密码不能为空');
                 return false;
             }
-            console.log('validate success');
             this.login(option);
         },
         validate: function(data) {
@@ -64,34 +63,17 @@ module.exports = {
             }
             return flag;
         },
-        /*
         login: function(option) {
             var self = this;
             $.post('http://angelclover.win:8080/login',option,function (response) {
-                console.info('mmmddd',response);
-                if (!!!response.error) {
-                    // TODO 需要在路右侧保存session
-                    window.location.href = '/'; // 跳转到首页
-                } else {
-                    self.showErrors(response.message);
-                }
-            });
-        },
-        */
-        login: function(option) {
-            var self = this;
-            $.post('http://angelclover.win:8080/login',option,function (response) {
-                    console.info('mmmddd',response);
                     if (!!!response.error) {
-                        // TODO 需要在路右侧保存session
+                        // 需要在路右侧保存session
                         var user = {}
                         user.username = option.username
                         user.token = response.data.token
-                        console.log(self)
-                        //self.loginS(user)
-                        self.$store.dispatch(SET_USERINFO, user)
+                        self.loginS(SET_USERINFO,user)
+                        saveToken(user.token);
                         self.$router.go('/home')
-                        //window.location.href = '/'; // 跳转到首页
                     } else {
                         self.showErrors(response.message);
                         self.$store.dispatch(DELETE_USER_INFO, user)
