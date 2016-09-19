@@ -54,7 +54,7 @@ nav(class="navbar navbar-default")
                     a {{$store.state.name}}
 
                 li
-                    a(class="navbar-header", v-on:click="logout") 登出
+                    a(class="navbar-header", v-on:click="loginorout") {{getShowName}}
                 li 
                     a(class="navbar-header", v-link="{path:'/about'}") 关于
 
@@ -64,17 +64,55 @@ nav(class="navbar navbar-default")
 
 <script>
         //div(id="navbar", class="navbar-collapse collapse")
-import DELETE_USER_INFO from '../vuex/store'
+import {DELETE_USER_INFO,SET_USERINFO} from '../vuex/store'
+import {clearToken,getToken} from '../auth'
+import {login_action} from '../vuex/actions'
+
 export default{
     data(){
+        var token = getToken();
+        var isLogin = typeof(token) == 'string' && token;
+        console.log('this.$store.state.name',this.$store.state.name);
         return {
-            msg: this.$store.state.name
+            msg: this.$store.state.name,
+            isLogin: !!this.$store.state.name,
+            url: this.$store.state.name ? 'logout' : 'login' 
         }
     },
+    vuex: {
+        getters: {
+            name: function (state) {
+                console.log('state',state);
+                return state.name
+            }
+        },
+        actions: {
+            loginS: login_action,
+        }
+    }, 
+    computed: {
+        getShowName: function() {
+            return this.$store.state.name ? '登出' : '登录'
+        }
+    },
+    ready: function(){
+        this.$data.isLogin && this.loginS(SET_USERINFO);
+    },
     methods:{
-        logout: function(){
-            this.$store.dispatch(DELETE_USER_INFO)
+        loginorout: function(){
+            if (this.isLoginFn()) {
+                this.loginS(DELETE_USER_INFO,{});
+                clearToken();
+            }
+            
             this.$router.go('/login')
+            
+        },
+        login: function() {
+            this.$router.go('/login')
+        },
+        isLoginFn: function() {
+            return !!this.$store.state.name;
         }
     }
 }
