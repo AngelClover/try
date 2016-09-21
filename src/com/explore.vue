@@ -17,8 +17,10 @@
                     <td>{{cl.docclass_id}}</td>
                     <td>{{cl.author_id}}</td>
                     <td :class="'text-center'">
-                        <button v-if="cl.file_type == 'jpg' || cl.file_type == 'pdf'" @click="explorer($index)">预览</button>
-                        <button v-if="cl.file_type != 'jpg && cl.file_type != 'pdf'" @click="download($index)">下载</button></td>
+                            <button v-if="cl.filesname == ''" @click="explorer($index)">申请</button>
+
+                            <button v-if="cl.filesname != '' && (cl.file_type == 'jpg' || cl.file_type == 'pdf')" @click="explorer($index)">预览</button>
+                            <button v-if="cl.filesname != '' && cl.file_type != 'jpg && cl.file_type != 'pdf'" @click="download($index)">下载</button></td>
                 </tr>
             </tbody>
         </table>
@@ -100,7 +102,13 @@ export default{
             if (_this.docData[index].file_type == "pdf"){
                 PDFObject.embed(url, '#pdfexplorer');
             }
+        },
+        apply: function(index){
+            var _this = this
+                //TODO fill in the number to apply page
+
         }
+
     }
 
 
