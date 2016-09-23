@@ -70,14 +70,14 @@ export default{
             var _this = this;
             var url = "http://angelclover.win:8080/apply?action=approve&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&apply_id=" + _this.applyData[index].id;
             console.info('approve url', url);
-            $get(url, function(res){
+            $.get(url, function(res){
                 console.info('approve pass res:', res);
-                if (!!!response.error){
+                if (!!!res.error){
                     console.info('approve succ');
                     _this.getlist()
                 }else{
-                    console.$set('error', response.error)
-                    console.$set('message', response.message)
+                    console.$set('error', res.error)
+                    console.$set('message', res.message)
                 }
 
             })

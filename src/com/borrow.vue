@@ -11,13 +11,13 @@
         </div>
         <div class="form-group">
             <label>起始时间:</label>
-            <input type="text" v-model="newborrow.starttime" id="datetimepicker" data-date-format="yymmddhhiiss">
+            <input type="text" v-model="newborrow.starttime" id="datetimepicker" >
             <label>(不填为从现在开始)</label>
         </div>
         <div class="form-group">
             <label>结束时间:</label>
-            <input type="text" v-model="newborrow.endtime" id="datetimepicker" data-date-format="yymmddhhiiss">
-            <label>格式:yymmddhhiiss</label>
+            <input type="text" v-model="newborrow.endtime" id="datetimepicker" >
+            <label>格式:yyyy-mm-dd hh:ii:ss</label>
         </div>
         <div class="form-group">
             <label></label>
@@ -81,6 +81,11 @@ export default{
     },
     ready: function(){
         this.getlist()
+        $('[id=datetimepicker]').datetimepicker({
+            format: 'yyyy-mm-dd hh:ii:ss',
+            language:'zh-CN',
+            autoclose:true
+        });
     },
     methods:{
         createborrow: function(){
