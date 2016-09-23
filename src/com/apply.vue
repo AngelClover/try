@@ -12,7 +12,7 @@
         -->
         <div class="form-group">
             <label>文件编号:</label>
-            <input type="text" v-model="newapply.fileid"/>
+            <input type="text" v-model="newapply.fileid" value="{{id}}"/>
         </div>
         <div class="form-group">
             <label>起始时间:</label>
@@ -60,6 +60,8 @@
 </template>
 
 <script>
+import {getToken,getUser} from '../auth'
+
 export default{
     data:{
         newapply: {
@@ -70,6 +72,7 @@ export default{
         applyData: [] ,
         error: 0,
         message: "",
+        id:""
     },
     route: {
         canActivate: function(){
@@ -81,7 +84,13 @@ export default{
         }
     },
     ready: function(){
-        this.getmyapplylist()
+        this.getmyapplylist();
+        this.$set('id',this.getQueryString().id);
+        $('[id=datetimepicker]').datetimepicker({
+            format: 'yyyy-mm-dd hh:ii:ss',
+            language:'zh-CN',
+            autoclose:true
+        });
     },
     methods:{
         getmyapplylist: function(){
@@ -161,6 +170,27 @@ export default{
               }
             })
         },
+        getQueryString: function () {
+            var query_string = {};
+            var query = window.location.hash.replace('#!/apply?','');
+            query = decodeURIComponent(query);
+            var vars = query.split("&");
+            for (var i = 0; i < vars.length; i++) {
+                var pair = vars[i].split("=");
+                // If first entry with this name
+                if (typeof query_string[pair[0]] === "undefined") {
+                    query_string[pair[0]] = pair[1];
+                    // If second entry with this name
+                } else if (typeof query_string[pair[0]] === "string") {
+                        var arr = [query_string[pair[0]], pair[1]];
+                        query_string[pair[0]] = arr;
+                        // If third or later entry with this name
+                    } else {
+                            query_string[pair[0]].push(pair[1]);
+                        }
+            }
+            return query_string;
+        }
     }
 }
 </script>

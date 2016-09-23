@@ -26,7 +26,7 @@
 <script>
 import {login_action} from '../../vuex/actions'
 import {SET_USERINFO} from '../../vuex/store'
-import {saveToken} from '../../auth'
+import {saveToken,saveUser} from '../../auth'
 
 
 module.exports = {
@@ -73,6 +73,7 @@ module.exports = {
                         user.token = response.data.token
                         self.loginS(SET_USERINFO,user)
                         saveToken(user.token);
+                        saveUser(user);
                         self.$router.go('/home')
                     } else {
                         self.showErrors(response.message);
