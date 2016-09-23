@@ -17,7 +17,7 @@
                     <td>{{cl.docclass_id}}</td>
                     <td>{{cl.author_id}}</td>
                     <td :class="'text-center'">
-                            <button v-if="cl.filesname == ''" @click="explorer($index)">申请</button>
+                            <button v-if="cl.filesname == ''" @click="apply(cl.id)">申请</button>
 
                             <button v-if="cl.filesname != '' && (cl.file_type == 'jpg' || cl.file_type == 'pdf')" @click="explorer($index)">预览</button>
                             <button v-if="cl.filesname != '' && cl.file_type != 'jpg && cl.file_type != 'pdf'" @click="download($index)">下载</button></td>
@@ -39,6 +39,8 @@
 
 <script>
 import PDFObject from 'pdfobject'
+import {getToken,getUser} from '../auth'
+
 export default{
     data: {
         docData: [],
@@ -69,8 +71,10 @@ export default{
         },
         getDoclist: function() {
             var _this = this
-            console.info(_this)
-            var url = "http://angelclover.win:8080/doc?action=get_all&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token
+            var user = _this.$store.state.name || getUser().username;
+            var token = _this.$store.state.token || getToken();
+
+            var url = "http://angelclover.win:8080/doc?action=get_all&username=" + user + "&token=" + token
             console.log(url)
             $.get(url, function (response) {
                 console.info('doc get', response)
@@ -88,6 +92,9 @@ export default{
             //console.info('vuex getters', _this.$store.state.token)
         },
         download: function(index){
+
+            console.log(arguments);
+
             var _this = this
             var url = "http://angelclover.win:8080/doc?action=get&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&file_id=" + _this.docData[index].id
             console.log('windown open', url)
@@ -103,10 +110,9 @@ export default{
                 PDFObject.embed(url, '#pdfexplorer');
             }
         },
-        apply: function(index){
-            var _this = this
-                //TODO fill in the number to apply page
-
+        apply: function(id){
+            var url = '/apply?id=' + id;
+            id && this.$router.go(url);
         }
 
     }
