@@ -30,10 +30,12 @@
         Error Num: {{error}}<br/>
         Error Message: {{message}}<br/>
     </div>
-    <div id="pdfexplorer" class="container">
+    <div v-if="showpdf">
+        <div id="pdfexplorer" class="container" >
+        </div>
     </div>
-    <div id="picexplorer" class="container">
-        <img src="{{resourceurl}}" class="img-rounded"></img>
+    <div id="picexplorer" class="container" v-if="showjpg">
+        <img v-bind:src="resourceurl" class="img-rounded"></img>
     </div>
 </template>
 
@@ -48,6 +50,8 @@ export default{
         message: "",
         filetype: "",
         resourceurl: "",
+        showpdf: false,
+        showjpg: false,
     },
     route: {
         canActivate: function(){
@@ -60,6 +64,8 @@ export default{
     },
     ready: function(){
         this.getDoclist()
+            this.$set(showpdf, false)
+            this.$set(showjpg, false)
         //this.renderpdf()
     },
     methods: {
@@ -108,6 +114,14 @@ export default{
             console.info('explorer params:', url, _this.docData[index].file_type)
             if (_this.docData[index].file_type == "pdf"){
                 PDFObject.embed(url, '#pdfexplorer');
+                _this.$set('showjpg', false)
+                _this.$set('showpdf', true)
+            }else if (_this.docData[index].file_type == "jpg" || _this.docData[index].file_type == "jpeg" ){
+                _this.$set('showjpg', true)
+                _this.$set('showpdf', false)
+            }else {
+                _this.$set('showjpg', false)
+                _this.$set('showpdf', false)
             }
         },
         apply: function(id){

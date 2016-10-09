@@ -5,12 +5,12 @@
 </style>
 <template>
     <div id="login-form">
-        <div class="input-group">
+        <div class="input-group col-xs-5">
             <span class="input-group-addon" id="basic-addon2">用户名</span>
             <input type="text" name="username" class="form-control" placeholder="请输入用户名" aria-describedby="basic-addon2">
         </div>
-        <div class="input-group">
-            <span class="input-group-addon" id="basic-addon2">密码</span>
+        <div class="input-group col-xs-5">
+            <span class="input-group-addon" id="basic-addon2">密   码</span>
             <input type="text" name="password" class="form-control" placeholder="请输入密码" aria-describedby="basic-addon2">
         </div>
         <div>
