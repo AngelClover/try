@@ -10,6 +10,7 @@ import users from './com/users.vue'
 import borrow from './com/borrow.vue'
 import apply from './com/apply.vue'
 import approve from './com/approve.vue'
+import view from './com/view.vue'
 
 export default{
     'home': {
@@ -46,5 +47,8 @@ export default{
     },
     'approve': {
         component: approve
+    },
+    'view': {
+        component: view
     }
 }

@@ -64,8 +64,8 @@ export default{
     },
     ready: function(){
         this.getDoclist()
-            this.$set(showpdf, false)
-            this.$set(showjpg, false)
+            this.$set('showpdf', false)
+            this.$set('showjpg', false)
         //this.renderpdf()
     },
     methods: {
@@ -112,6 +112,12 @@ export default{
             _this.$set('resourceurl', url)
             _this.$set('file_type', _this.docData[index].file_type)
             console.info('explorer params:', url, _this.docData[index].file_type)
+            var targetUrl = "view?id=" + _this.docData[index].id;
+            console.info('targetUrl', targetUrl);
+            if (_this.docData[index].id != undefined){
+                this.$router.go(targetUrl)
+            }
+            /*
             if (_this.docData[index].file_type == "pdf"){
                 PDFObject.embed(url, '#pdfexplorer');
                 _this.$set('showjpg', false)
@@ -123,6 +129,7 @@ export default{
                 _this.$set('showjpg', false)
                 _this.$set('showpdf', false)
             }
+            */
         },
         apply: function(id){
             var url = '/apply?id=' + id;

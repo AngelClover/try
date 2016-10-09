@@ -2,9 +2,13 @@
 //div sidebar
 ul(class="nav nav-list bs-docs-sidenav")
     li
+        a(v-link="{path:'/view'}") 
+            i(class="icon-chevron-right")
+                档案阅览
+    li
         a(v-link="{path:'/explore'}") 
             i(class="icon-chevron-right")
-                档案借阅
+                档案查找
     li
         a(v-link="{path:'/apply'}") 
             i(class="icon-chevron-right")
