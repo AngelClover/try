@@ -34,6 +34,7 @@
     </div>
 </template>
 <script>
+import {Url} from '../config.js'
 export default{
     data:{
         applyData: [],
@@ -54,7 +55,7 @@ export default{
                 _this.$set('meesage', 'no prilivage')
                 return 
             }
-            var url = "http://angelclover.win:8080/apply?action=get_all&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token;
+            var url = Url + "/apply?action=get_all&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token;
             console.info('approve get list', url);
             $.get(url, function(res){
                 console.info('approve get list res:', res);
@@ -68,7 +69,7 @@ export default{
         },
         approveapply: function(index){
             var _this = this;
-            var url = "http://angelclover.win:8080/apply?action=approve&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&apply_id=" + _this.applyData[index].id;
+            var url = Url + "/apply?action=approve&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&apply_id=" + _this.applyData[index].id;
             console.info('approve url', url);
             $.get(url, function(res){
                 console.info('approve pass res:', res);

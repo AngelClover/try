@@ -61,6 +61,7 @@
 
 <script>
 import {getToken,getUser} from '../auth'
+import {Url} from '../config.js'
 
 export default{
     data:{
@@ -108,7 +109,7 @@ export default{
             if (end == undefined || end == ""){
                 end = "forever"
             }
-            var url = "http://angelclover.win:8080/apply?action=add&username=" + this.$store.state.name + "&token=" + this.$store.state.token + "&to_doc_id_list=" + this.newapply.fileid + "&start_time=" + (_this.newapply.starttime == undefined? "" : _this.newapply.starttime) + "&end_time=" + end; 
+            var url = Url + "/apply?action=add&username=" + this.$store.state.name + "&token=" + this.$store.state.token + "&to_doc_id_list=" + this.newapply.fileid + "&start_time=" + (_this.newapply.starttime == undefined? "" : _this.newapply.starttime) + "&end_time=" + end; 
             console.info('add borrow', url)
             $.get(url, function(response){
                 console.info('add apply res:', response)
@@ -130,7 +131,7 @@ export default{
                 return false;
             }
             */
-            var reqUrl = "http://angelclover.win:8080/apply?"
+            var reqUrl = Url + "/apply?"
             var act = "get"
             if (_this.$store.state.isadmin == true){
                 act = "get_all"
@@ -157,7 +158,7 @@ export default{
         deleteborrow: function(index){
             //this.gridData.splice(index,1);
             var _this = this
-            var url = "http://angelclover.win:8080/apply?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&apply_id=" + _this.applyData[index].id;
+            var url = Url + "/apply?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&apply_id=" + _this.applyData[index].id;
             console.info('apply borrow', url);
             $.get(url, function(response){
                 console.info('apply borrow res:', response)

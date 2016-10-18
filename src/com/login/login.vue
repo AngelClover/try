@@ -11,7 +11,7 @@
         </div>
         <div class="input-group col-xs-5">
             <span class="input-group-addon" id="basic-addon2">密   码</span>
-            <input type="text" name="password" class="form-control" placeholder="请输入密码" aria-describedby="basic-addon2">
+            <input type="password" name="password" class="form-control" placeholder="请输入密码" aria-describedby="basic-addon2">
         </div>
         <div>
             <button type="button" id="loginButton" data-loading-text="Loading..." class="btn btn-primary" autocomplete="off" v-on:click="submit">
@@ -26,7 +26,8 @@
 <script>
 import {login_action} from '../../vuex/actions'
 import {SET_USERINFO} from '../../vuex/store'
-import {saveToken,saveUser} from '../../auth'
+import {saveToken,saveUser,saveAuthString} from '../../auth'
+import {Url} from '../../config.js'
 
 
 module.exports = {
@@ -45,7 +46,7 @@ module.exports = {
         submit: function(event){
             var option = {
                 username:$('input[name=username]').val(),
-                password:$('input[name=password]').val()
+                password:$('input[name=password]').val(),
             }
             if (!this.validate(option)) {
                 this.showErrors('用户名或密码不能为空');
@@ -65,7 +66,40 @@ module.exports = {
         },
         login: function(option) {
             var self = this;
-            $.post('http://angelclover.win:8080/login',option,function (response) {
+            var trans = option.username + ":" + option.password;
+            var target = window.btoa(trans);
+            console.log('login trans ', trans + '->' + target);
+            var head = new Headers();
+            head.append('Authorization', target);
+            //head['Authorization'] = target;
+            console.info(head);
+            var target_auth_string = "Basic " + target;
+            $.ajax({
+                url: Url + '/api/token',
+                method: 'POST',
+                beforeSend: function(xhr){
+                    console.info('beforeSend');
+                    xhr.setRequestHeader("Authorization", target_auth_string);
+                },
+                success: function(response){
+                    // 需要在路右侧保存session
+                    var user = {}
+                    user.username = option.username
+                    user.token = response.token
+                    user.auth_string = target_auth_string;
+                    self.loginS(SET_USERINFO, user);
+                    saveToken(user.token);
+                    saveAuthString(user.auth_string);
+                    saveUser(user);
+                    self.$router.go('/home')
+                },
+                error: function(response){
+                    self.showErrors("user not exsits, or password incorrect");
+                    self.$store.dispatch(DELETE_USER_INFO, user)
+                }
+            });
+                /*
+            $.post('http://angelclover.win:8080/api/token',option,function (response) {
                     if (!!!response.error) {
                         // 需要在路右侧保存session
                         var user = {}
@@ -80,6 +114,7 @@ module.exports = {
                         self.$store.dispatch(DELETE_USER_INFO, user)
                     }
                 });
+                */
         },
         showErrors: function(error) {
             $('.error').html(error.toString());

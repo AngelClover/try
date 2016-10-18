@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import {Url} from '../config.js'
 export default {
     data:{
         newuser:{
@@ -53,7 +54,7 @@ export default {
         userData:[],
         error: 0,
         errmsg:"",
-        reqUrl: "http://angelclover.win:8080/user?"
+        reqUrl: "http://angelclover.win/user?"
     },
     ready: function(){
         this.getUsers()
@@ -76,7 +77,7 @@ export default {
                 return false;
             }
             var username = _this.$store.state.name
-            var reqUrl = "http://angelclover.win:8080/user?"
+            var reqUrl = Url + "/user?"
             var url = reqUrl + "action=get_all&username=" + username;
             console.info('get all users', url)
             $.get(url, function(res){
@@ -93,7 +94,7 @@ export default {
         addUser: function(){
             var _this = this
             var create_user = "test"
-            var reqUrl = "http://angelclover.win:8080/user?"
+            var reqUrl = Url + "/user?"
             var url = reqUrl + "action=add&username=" + this.newuser.name + "&password=" + this.newuser.password + "&create_user=" + _this.$store.state.name;
             console.info('add user', url)
             $.get(url, function(res){
@@ -108,7 +109,7 @@ export default {
         delUser: function(index){
             var _this = this
             var delete_username = this.userData[index].name
-            var reqUrl = "http://angelclover.win:8080/user?"
+            var reqUrl = Url + "/user?"
             var url = reqUrl + "action=del&username=" + delete_username;
             console.info('del user', url)
             $.get(url, function(res){

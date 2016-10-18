@@ -61,6 +61,7 @@
     </div>
 </template>
 <script>
+import {Url} from '../config.js'
 //import {get_username, get_id, get_token} from '../vuex/getters'
 export default{
     data: {
@@ -119,7 +120,7 @@ export default{
         getDocclass: function() {
             var _this = this
             console.info(_this)
-            var url = "http://angelclover.win:8080/docclass?action=get_all&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token
+            var url = Url + "/docclass?action=get_all&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token
             console.log(url)
             $.get(url, function (response) {
                 console.info('asd', response)
@@ -144,7 +145,7 @@ export default{
                 _this.$set('errmsg', 'no right to delete')
                 return false
             }
-            var url = "http://angelclover.win:8080/docclass?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&name=" + this.gridData[index].name + "&docclass_id=" + this.gridData[index].id + "&parent_id=" + this.gridData[index].parent_id;
+            var url = Url + "/docclass?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&name=" + this.gridData[index].name + "&docclass_id=" + this.gridData[index].id + "&parent_id=" + this.gridData[index].parent_id;
             var _this = this
             console.info('delete class', url);
             $.get(url, function(response){
@@ -160,7 +161,7 @@ export default{
         },
         createclass: function(){
             var _this = this
-            var url = "http://angelclover.win:8080/docclass?action=add&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&name=" + this.newclass.name + "&parent_id=" + this.newclass.parent_id; 
+            var url = Url + "/docclass?action=add&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&name=" + this.newclass.name + "&parent_id=" + this.newclass.parent_id; 
             console.info('add class', url)
             $.get(url, function(response){
                 console.info('add class res:', response)

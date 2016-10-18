@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import {Url} from '../config.js'
 export default {
     data: {
         msg : [],
@@ -65,7 +66,7 @@ export default {
                 _this.$set('message', 'no right to view the history list')
                 return false;
             }
-            var url = "http://angelclover.win:8080/viewlog?page=" + index + "&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token;
+            var url = Url + "/viewlog?page=" + index + "&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token;
             $.get(url, function(response){
                 console.info('view log', response)
                 if (!!!response.error){

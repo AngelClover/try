@@ -70,6 +70,7 @@
 </template>
 
 <script>
+import {Url} from '../config.js'
 module.exports = {
     el:'#login-form',
     name: 'addOrganization',
@@ -130,7 +131,7 @@ module.exports = {
         },
         getClasses: function() {
             var self = this;
-            $.get('http://angelclover.win:8080/docclass?action=get_all&username=test',function (response) {
+            $.get(Url + '/docclass?action=get_all&username=test',function (response) {
                 console.info('mmmddd',response);
                 if (!!!response.error) {
                     var array = [];
@@ -166,7 +167,7 @@ module.exports = {
             if (_this.$store.state.isadmin == false){
                 return
             }
-            var url = "http://angelclover.win:8080/doc?action=get_all&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token
+            var url = Url + "/doc?action=get_all&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token
             console.log(url)
             $.get(url, function (response) {
                 console.info('doc get', response)
@@ -181,7 +182,7 @@ module.exports = {
         },
         deleteDoc: function(index){
             var _this = this;
-            var url = "http://angelclover.win:8080/doc?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&file_id=" + _this.docData[index].id;
+            var url = Url + "/doc?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&file_id=" + _this.docData[index].id;
             console.log('delete doc: ', url)
             $.get(url, function (response) {
                 console.info('doc del res:', response)

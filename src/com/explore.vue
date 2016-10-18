@@ -42,6 +42,7 @@
 <script>
 import PDFObject from 'pdfobject'
 import {getToken,getUser} from '../auth'
+import {Url, FileUrl} from '../config.js'
 
 export default{
     data: {
@@ -63,15 +64,22 @@ export default{
         }
     },
     ready: function(){
-        this.getDoclist()
-            this.$set('showpdf', false)
-            this.$set('showjpg', false)
+        /*workflow:
+          1. user select docclass
+          2. get columns names according to docclass
+          3. user choose columns and fill-in text segment
+          4. press committee and send request
+          5. display
+          */
+        //this.getDoclist()
+            //this.$set('showpdf', false)
+            //this.$set('showjpg', false)
         //this.renderpdf()
     },
     methods: {
         renderpdf: function(){
             var _this = this
-            //var url = "http://angelclover.win:8080/doc?action=get&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&file_id=" + "3"
+            //var url = "http://angelclover.win/doc?action=get&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&file_id=" + "3"
             //var url = "http://angelclover.win/files/p7_p285.pdf"
             console.log(_this.url)
         },
@@ -80,7 +88,7 @@ export default{
             var user = _this.$store.state.name || getUser().username;
             var token = _this.$store.state.token || getToken();
 
-            var url = "http://angelclover.win:8080/doc?action=get_all&username=" + user + "&token=" + token
+            var url = Url + "/doc?action=get_all&username=" + user + "&token=" + token
             console.log(url)
             $.get(url, function (response) {
                 console.info('doc get', response)
@@ -89,7 +97,7 @@ export default{
                     _this.$set('docData', response.data)
                 }else{
                     _this.$set('error', response.error)
-                    _this.$set('errmsg', response.message)
+                    _this.$set('message', response.message)
                 }
             })
             //console.info('vuex getdocs', _this.getName())
@@ -102,13 +110,13 @@ export default{
             console.log(arguments);
 
             var _this = this
-            var url = "http://angelclover.win:8080/doc?action=get&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&file_id=" + _this.docData[index].id
+            var url = Url + "/doc?action=get&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&file_id=" + _this.docData[index].id
             console.log('windown open', url)
             window.open(url)
         },
         explorer: function(index){
             var _this = this
-            var url = "http://angelclover.win/files/" + _this.docData[index].filesname
+            var url = FileUrl + "/files/" + _this.docData[index].filesname
             _this.$set('resourceurl', url)
             _this.$set('file_type', _this.docData[index].file_type)
             console.info('explorer params:', url, _this.docData[index].file_type)
@@ -116,6 +124,9 @@ export default{
             console.info('targetUrl', targetUrl);
             if (_this.docData[index].id != undefined){
                 this.$router.go(targetUrl)
+            }else{
+                this.$set('error', 1);
+                this.$set('messsage', "doc id error");
             }
             /*
             if (_this.docData[index].file_type == "pdf"){
