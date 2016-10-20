@@ -57,7 +57,7 @@ export default{
             }
             var url = Url + "/apply?action=get_all&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token;
             console.info('approve get list', url);
-            $.get(url, function(res){
+            $(document).get(url, function(res){
                 console.info('approve get list res:', res);
                 _this.$set('error', res.error)
                 _this.$set('message', res.message)
@@ -71,7 +71,7 @@ export default{
             var _this = this;
             var url = Url + "/apply?action=approve&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&apply_id=" + _this.applyData[index].id;
             console.info('approve url', url);
-            $.get(url, function(res){
+            $(document).get(url, function(res){
                 console.info('approve pass res:', res);
                 if (!!!res.error){
                     console.info('approve succ');

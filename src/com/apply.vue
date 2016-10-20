@@ -111,7 +111,7 @@ export default{
             }
             var url = Url + "/apply?action=add&username=" + this.$store.state.name + "&token=" + this.$store.state.token + "&to_doc_id_list=" + this.newapply.fileid + "&start_time=" + (_this.newapply.starttime == undefined? "" : _this.newapply.starttime) + "&end_time=" + end; 
             console.info('add borrow', url)
-            $.get(url, function(response){
+            $(document).get(url, function(response){
                 console.info('add apply res:', response)
                 if (!!!response.error){
                     console.info('add succ')
@@ -143,7 +143,7 @@ export default{
             }
             var url = reqUrl + "action=" + act + "&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token;
             console.info('apply list ', url)
-            $.get(url, function(res){
+            $(document).get(url, function(res){
                 console.info('apply list res:', res);
                 _this.$set('error', res.error)
                 _this.$set('message', res.message)
@@ -160,7 +160,7 @@ export default{
             var _this = this
             var url = Url + "/apply?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&apply_id=" + _this.applyData[index].id;
             console.info('apply borrow', url);
-            $.get(url, function(response){
+            $(document).get(url, function(response){
                 console.info('apply borrow res:', response)
               if (!!!response.error){
                   console.info('delete succ')

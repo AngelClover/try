@@ -45,6 +45,6 @@ export const getUser = () => {
 
 export const getAuthHeader = () => {
     return {
-        'Authorization': 'request ' + localStorage.getItem(AUTH_TOKEN)
+        'Authorization': 'Basic ' + localStorage.getItem(AUTH_TOKEN)
     }
 }

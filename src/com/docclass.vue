@@ -122,7 +122,7 @@ export default{
             console.info(_this)
             var url = Url + "/docclass?action=get_all&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token
             console.log(url)
-            $.get(url, function (response) {
+            $(document).get(url, function (response) {
                 console.info('asd', response)
                 if (!!!response.error){
                     console.info('asd', response.data)
@@ -148,7 +148,7 @@ export default{
             var url = Url + "/docclass?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&name=" + this.gridData[index].name + "&docclass_id=" + this.gridData[index].id + "&parent_id=" + this.gridData[index].parent_id;
             var _this = this
             console.info('delete class', url);
-            $.get(url, function(response){
+            $(document).get(url, function(response){
                 console.info('delete class res:', response)
               if (!!!response.error){
                   console.info('delete succ')
@@ -163,7 +163,7 @@ export default{
             var _this = this
             var url = Url + "/docclass?action=add&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&name=" + this.newclass.name + "&parent_id=" + this.newclass.parent_id; 
             console.info('add class', url)
-            $.get(url, function(response){
+            $(document).get(url, function(response){
                 console.info('add class res:', response)
                 if (!!!response.error){
                     console.info('add succ')

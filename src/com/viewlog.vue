@@ -67,7 +67,7 @@ export default {
                 return false;
             }
             var url = Url + "/viewlog?page=" + index + "&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token;
-            $.get(url, function(response){
+            $(document).get(url, function(response){
                 console.info('view log', response)
                 if (!!!response.error){
                     console.info('view log data', response.data)

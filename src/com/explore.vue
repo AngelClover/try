@@ -90,7 +90,7 @@ export default{
 
             var url = Url + "/doc?action=get_all&username=" + user + "&token=" + token
             console.log(url)
-            $.get(url, function (response) {
+            $(document).get(url, function (response) {
                 console.info('doc get', response)
                 if (!!!response.error){
                     console.info('doc get res', response.data)

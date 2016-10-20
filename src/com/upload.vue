@@ -11,7 +11,7 @@
     }
 </style>
 <template>
-    <form id="file-form" action="http://angelclover.win:8080/doc" method="post" enctype="multipart/form-data">
+    <form id="file-form" v-bind:action={{uploadUrl}} method="post" enctype="multipart/form-data">
         <input name="file" type="file" value="上传文件" v-on:change="checkFile">
         <input name="action" type="hidden" value="upload">
         <input name="username" type="hidden" value="test">
@@ -78,6 +78,7 @@ module.exports = {
         docData: [],
         error: 0,
         message: "",
+        uploadUrl: ""
     },
     route: {
         canActivate: function(){
@@ -89,6 +90,7 @@ module.exports = {
     ready: function() {
         this.getClasses();
         this.getDoclist();
+        this.$set('uploadUrl', Url + '/doc');
     },
     methods: {
         submit: function() {
@@ -104,12 +106,12 @@ module.exports = {
             return false;
         },
         checkFile: function(event) {
-            var MAX_SIZE = 16 * 1024 * 1024;
+            var MAX_SIZE = 32 * 1024 * 1024;
             var file = event && event.target ? event.target.files[0] : event;
             typeof(file) == 'undefined' && this.showErrors('请选择文件上传');
             var size = file.size;
             
-            size > MAX_SIZE && this.showErrors('文件大于16M，请上传小于16M的文件');
+            size > MAX_SIZE && this.showErrors('文件大于32M，请上传小于32M的文件');
             return size > MAX_SIZE ? false : true;
         },
         validateClass: function() {
@@ -131,7 +133,7 @@ module.exports = {
         },
         getClasses: function() {
             var self = this;
-            $.get(Url + '/docclass?action=get_all&username=test',function (response) {
+            $(document).get(Url + '/docclass?action=get_all&username=test',function (response) {
                 console.info('mmmddd',response);
                 if (!!!response.error) {
                     var array = [];
@@ -169,7 +171,7 @@ module.exports = {
             }
             var url = Url + "/doc?action=get_all&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token
             console.log(url)
-            $.get(url, function (response) {
+            $(document).get(url, function (response) {
                 console.info('doc get', response)
                 if (!!!response.error){
                     console.info('doc get res', response.data)
@@ -184,7 +186,7 @@ module.exports = {
             var _this = this;
             var url = Url + "/doc?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&file_id=" + _this.docData[index].id;
             console.log('delete doc: ', url)
-            $.get(url, function (response) {
+            $(document).get(url, function (response) {
                 console.info('doc del res:', response)
                 _this.$set('error', response.error)
                 _this.$set('message', response.message)

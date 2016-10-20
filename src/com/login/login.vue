@@ -26,7 +26,7 @@
 <script>
 import {login_action} from '../../vuex/actions'
 import {SET_USERINFO} from '../../vuex/store'
-import {saveToken,saveUser,saveAuthString} from '../../auth'
+import {saveToken,saveUser,saveAuthString, getToken} from '../../auth'
 import {Url} from '../../config.js'
 
 
@@ -91,30 +91,16 @@ module.exports = {
                     saveToken(user.token);
                     saveAuthString(user.auth_string);
                     saveUser(user);
-                    self.$router.go('/home')
+                    $(document).ajaxSend(function(event, xhr, options){
+                        xhr.setRequestHeader("Authorization", "Basic " + getToken());
+                    });
+                    self.$router.go('/home');
                 },
                 error: function(response){
                     self.showErrors("user not exsits, or password incorrect");
                     self.$store.dispatch(DELETE_USER_INFO, user)
                 }
             });
-                /*
-            $.post('http://angelclover.win:8080/api/token',option,function (response) {
-                    if (!!!response.error) {
-                        // 需要在路右侧保存session
-                        var user = {}
-                        user.username = option.username
-                        user.token = response.data.token
-                        self.loginS(SET_USERINFO,user)
-                        saveToken(user.token);
-                        saveUser(user);
-                        self.$router.go('/home')
-                    } else {
-                        self.showErrors(response.message);
-                        self.$store.dispatch(DELETE_USER_INFO, user)
-                    }
-                });
-                */
         },
         showErrors: function(error) {
             $('.error').html(error.toString());

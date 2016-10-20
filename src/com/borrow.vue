@@ -111,7 +111,7 @@ export default{
             var _this = this
             var url = Url + "/borrow?action=add&username=" + this.$store.state.name + "&token=" + this.$store.state.token + "&to_username=" + this.newborrow.toname + "&to_doc_id_list=" + this.newborrow.fileid + "&start_time=" + (_this.newborrow.starttime == undefined? "" : _this.newborrow.starttime) + "&end_time=" + end; 
             console.info('add borrow', url)
-            $.get(url, function(response){
+            $(document).get(url, function(response){
                 console.info('add borrow res:', response)
                 if (!!!response.error){
                     console.info('add succ')
@@ -133,7 +133,7 @@ export default{
             var reqUrl = Url + "/borrow?"
             var url = reqUrl + "action=get_all&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token;
             console.info('borrow list ', url)
-            $.get(url, function(res){
+            $(document).get(url, function(res){
                 console.info('borrow list res:', res);
                 _this.$set('error', res.error)
                 _this.$set('message', res.message)
@@ -155,7 +155,7 @@ export default{
             }
             var url = Url + "/borrow?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&auth_id=" + _this.borrowData[index].id;
             console.info('delete borrow', url);
-            $.get(url, function(response){
+            $(document).get(url, function(response){
                 console.info('delete borrow res:', response)
               if (!!!response.error){
                   console.info('delete succ')

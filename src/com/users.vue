@@ -54,7 +54,7 @@ export default {
         userData:[],
         error: 0,
         errmsg:"",
-        reqUrl: "http://angelclover.win/user?"
+        //reqUrl: "http://angelclover.win/user?"
     },
     ready: function(){
         this.getUsers()
@@ -80,7 +80,7 @@ export default {
             var reqUrl = Url + "/user?"
             var url = reqUrl + "action=get_all&username=" + username;
             console.info('get all users', url)
-            $.get(url, function(res){
+            $(document).get(url, function(res){
                 console.info('get_all users res:', res);
                 _this.setMessage(res)
                 if (!!!res.error){
@@ -97,7 +97,7 @@ export default {
             var reqUrl = Url + "/user?"
             var url = reqUrl + "action=add&username=" + this.newuser.name + "&password=" + this.newuser.password + "&create_user=" + _this.$store.state.name;
             console.info('add user', url)
-            $.get(url, function(res){
+            $(document).get(url, function(res){
                 console.info('add user res:', res);
                 _this.setMessage(res)
                 if (!!!res.error){
@@ -112,7 +112,7 @@ export default {
             var reqUrl = Url + "/user?"
             var url = reqUrl + "action=del&username=" + delete_username;
             console.info('del user', url)
-            $.get(url, function(res){
+            $(document).get(url, function(res){
                 console.info('del user', res);
                 _this.setMessage(res)
                 if (!!!res.error){
