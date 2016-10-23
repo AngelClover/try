@@ -40,6 +40,8 @@
                 <tr>
                     <td> 门类编号 </td>
                     <td> 门类名称 </td>
+                    <td> 门类层级 </td>
+                    <td> 是否是老规则档案 </td>
                     <td> 门类父节点编号 </td>
                     <td> </td>
                 </tr>
@@ -48,6 +50,8 @@
                 <tr v-for="cl in gridData">
                     <td>{{cl.id}}</td>
                     <td>{{cl.name}}</td>
+                    <td>{{cl.level}}</td>
+                    <td>{{cl.type}}</td>
                     <td>{{cl.parent_id}}</td>
                     <td :class="'text-center'"><button @click="deleteclass($index)">Delete</button></td>
                 </tr>
@@ -60,6 +64,7 @@
         Error Message: {{errmsg}}<br/>
     </div>
 </template>
+
 <script>
 import {Url} from '../config.js'
 //import {get_username, get_id, get_token} from '../vuex/getters'
@@ -69,7 +74,6 @@ export default{
             name: "新门类名称",
             parent_id: 0
         },
-        gridColumns: ['id', 'name', 'parent_id', 'customizable'],
         gridData: [],
         error: 0,
         errmsg:"",
@@ -120,13 +124,16 @@ export default{
         getDocclass: function() {
             var _this = this
             console.info(_this)
-            var url = Url + "/docclass?action=get_all&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token
+            //var url = Url + "/docclass?action=get_all&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token
+            var url = Url + "/docclass";
             console.log(url)
-            $(document).get(url, function (response) {
+            $.ajax(url).done(function (response) {
+            //$.get(url, function (response) {
+            //$(document).get(url, function (response) {
                 console.info('asd', response)
                 if (!!!response.error){
-                    console.info('asd', response.data)
-                    _this.$set('gridData', response.data)
+                    console.info('asd', response.docclass)
+                    _this.$set('gridData', response.docclass)
                 }else{
                     _this.$set('error', response.error)
                     _this.$set('errmsg', response.message)
@@ -145,10 +152,13 @@ export default{
                 _this.$set('errmsg', 'no right to delete')
                 return false
             }
-            var url = Url + "/docclass?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&name=" + this.gridData[index].name + "&docclass_id=" + this.gridData[index].id + "&parent_id=" + this.gridData[index].parent_id;
-            var _this = this
+            var url = Url + "/docclass";
+            //var url = Url + "/docclass?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&name=" + this.gridData[index].name + "&docclass_id=" + this.gridData[index].id + "&parent_id=" + this.gridData[index].parent_id;
+            var _this = this;
             console.info('delete class', url);
-            $(document).get(url, function(response){
+            //TODO: check
+            $.ajax(url,{METHOD:"DELETE"}).done(function(response){
+            //$(document).get(url, function(response){
                 console.info('delete class res:', response)
               if (!!!response.error){
                   console.info('delete succ')
@@ -161,9 +171,12 @@ export default{
         },
         createclass: function(){
             var _this = this
-            var url = Url + "/docclass?action=add&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&name=" + this.newclass.name + "&parent_id=" + this.newclass.parent_id; 
-            console.info('add class', url)
-            $(document).get(url, function(response){
+            //var url = Url + "/docclass?action=add&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&name=" + this.newclass.name + "&parent_id=" + this.newclass.parent_id; 
+            var url = Url + "/docclass";
+            console.info('add class', url);
+            //TODO: check
+            $.ajax(url,{METHOD:"PUT"}).done(function(response){
+            //$(document).get(url, function(response){
                 console.info('add class res:', response)
                 if (!!!response.error){
                     console.info('add succ')

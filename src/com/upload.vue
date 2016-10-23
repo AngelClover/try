@@ -22,7 +22,7 @@
         <input name="docclass_id" type="hidden">
         <div class="dropdown" id="class-dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                <span class="selected-name">选择部门</span>
+                <span class="selected-name">选择门类</span>
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
@@ -133,13 +133,16 @@ module.exports = {
         },
         getClasses: function() {
             var self = this;
-            $(document).get(Url + '/docclass?action=get_all&username=test',function (response) {
+            $.ajax(Url + "/docclass").done(function(response){
+            //$(document).get(Url + '/docclass?action=get_all&username=test',function (response) {
                 console.info('mmmddd',response);
                 if (!!!response.error) {
                     var array = [];
-                    var data = response.data;
+                    var data = response.docclass;
                     for (var i = 0;i < data.length;i++) {
-                        array.push('<li data-id="'+ data[i].id +'"><a href="#">' + data[i].name + '</a></li>');
+                        if (data[i].level == 4){
+                            array.push('<li data-id="'+ data[i].id +'"><a href="#">' + data[i].name + '</a></li>');
+                        }
                     }
 
                     console.info('array info', array.join('')); 

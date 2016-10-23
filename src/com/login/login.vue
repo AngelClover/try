@@ -25,7 +25,7 @@
 
 <script>
 import {login_action} from '../../vuex/actions'
-import {SET_USERINFO} from '../../vuex/store'
+import {SET_USERINFO, DELETE_USER_INFO} from '../../vuex/store'
 import {saveToken,saveUser,saveAuthString, getToken} from '../../auth'
 import {Url} from '../../config.js'
 
@@ -98,6 +98,10 @@ module.exports = {
                 },
                 error: function(response){
                     self.showErrors("user not exsits, or password incorrect");
+                    var user = {}
+                    user.username = option.username
+                    user.token = ""
+                    user.auth_string = "";
                     self.$store.dispatch(DELETE_USER_INFO, user)
                 }
             });

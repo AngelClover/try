@@ -1,4 +1,5 @@
 <template>
+    <!--
     <div>
         <table  class="table table-bordered">
             <thead>
@@ -24,6 +25,66 @@
                 </tr>
             </tbody>
         </table>
+    </div>
+    -->
+    <form id="file-form" v-bind:action={{uploadUrl}} method="post" enctype="multipart/form-data">
+        <!-- <label>门类编号:</label>
+        <input name="docclass_id" value='0'> -->
+        <input name="docclass_id" type="hidden">
+        <div class="dropdown" id="choose-docclass">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span class="selected-name" id="choosed-docclass">选择门类</span>
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            </ul>
+        </div>
+        <div class="dropdown" id="choose-volumn">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span class="selected-name" id="choosed-volumn">选择卷</span>
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" id="volumn-dropdown-menu">
+            </ul>
+        </div>
+    </form>
+    <div>
+        <table  class="table table-bordered">
+            <thead>
+                <tr>
+                    <td> 档案编号 </td>
+                    <td> 档案名 </td>
+                    <td> 门类编号</td>
+                    <td> 作者id</td>
+                    <td> </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="cl in volumnInfo.docs">
+                    <td>{{cl.id}}</td>
+                    <td>{{cl.name}}</td>
+                    <td>{{cl.docclass_id}}</td>
+                    <td>{{cl.uploader}}</td>
+                    <td :class="'text-center'">
+                        <button @click="explorer($index)">预览</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div v-for="value in docClassInfo">
+        {{$key}}:{{value}}
+    </div>
+    <div v-for="item in volumnInfo.docs">
+        {{$index}}:
+        <div v-for="value in item">
+            {{$key}}:{{value}}
+        </div>
+    </div>
+    <div v-for="item in volumnInfo.doc_properties">
+        {{$index}}:
+        <div v-for="value in item">
+            {{$key}}:{{value}}
+        </div>
     </div>
     <br/>
     <div v-if="error > 0" color="red">
@@ -53,6 +114,8 @@ export default{
         resourceurl: "",
         showpdf: false,
         showjpg: false,
+        volumnInfo: {},
+        docClassInfo: {},
     },
     route: {
         canActivate: function(){
@@ -75,6 +138,7 @@ export default{
             //this.$set('showpdf', false)
             //this.$set('showjpg', false)
         //this.renderpdf()
+        this.getDocClassList();
     },
     methods: {
         renderpdf: function(){
@@ -83,27 +147,94 @@ export default{
             //var url = "http://angelclover.win/files/p7_p285.pdf"
             console.log(_this.url)
         },
-        getDoclist: function() {
-            var _this = this
-            var user = _this.$store.state.name || getUser().username;
-            var token = _this.$store.state.token || getToken();
+        getDocClassList: function(){
+            var self = this;
+            $.ajax(Url + "/docclass").done(function(response){
+            //$(document).get(Url + '/docclass?action=get_all&username=test',function (response) {
+                console.info('explorerdocclasslist',response);
+                if (!!!response.error) {
+                    var array = [];
+                    var data = response.docclass;
+                    for (var i = 0;i < data.length;i++) {
+                        if (data[i].level == 4){
+                            array.push('<li data-id="'+ data[i].id +'"><a href="#">' + data[i].name + '</a></li>');
+                        }
+                    }
 
-            var url = Url + "/doc?action=get_all&username=" + user + "&token=" + token
-            console.log(url)
-            $(document).get(url, function (response) {
-                console.info('doc get', response)
-                if (!!!response.error){
-                    console.info('doc get res', response.data)
-                    _this.$set('docData', response.data)
-                }else{
-                    _this.$set('error', response.error)
-                    _this.$set('message', response.message)
+                    console.info('array info', array.join('')); 
+                    console.info('choosed for append', $('#choose-docclass .dropdown-menu'));
+                    $('#choose-docclass .dropdown-menu').append(array.join(''));
+                    console.info('choosed for append end', $('#choose-docclass .dropdown-menu'));
+                    self.bindDocClassEvent();
                 }
+            });
+        },
+        bindDocClassEvent: function() {
+            var _this = this;
+            $('#choose-docclass .dropdown-menu li').on('click',function () {
+                var id = $(this).attr('data-id');
+                var name = $(this).find('a').text();
+
+                $('#choosed-docclass').text(name);
+                //$('.dropdown .selected-name').text(name);
+                $(this).parent().hide();
+                console.log('id',id);
+                //$('input[name=docclass_id]').val(id);
+                _this.getVolumnList(id);
+                return false;
+            });
+            $('#dropdownMenu1').on('click',function() {
+            //$('button[data-toggle="dropdown"]').on('click',function() {
+                $('#choose-docclass .dropdown-menu').toggle();
             })
-            //console.info('vuex getdocs', _this.getName())
-            //console.info('vuex getters', _this.$store.state.name)
-            //console.info('vuex getters', _this.$store.state.id)
-            //console.info('vuex getters', _this.$store.state.token)
+        },
+        getVolumnList: function(docclass_id){
+            var _this = this;
+            if (docclass_id != undefined){
+                $.ajax(Url + "/docclass/" + docclass_id).done(function(response){
+                    console.info('explorervolumnlist',response);
+                    if (!!!response.error) {
+                        _this.$set("docClassInfo", response);
+                        var array = [];
+                        var data = response.volumnes;
+                        for (var i = 0;i < data.length;i++) {
+                            array.push('<li data-id="'+ data[i].id +'"><a href="#">' + data[i].name + '</a></li>');
+                        }
+
+                        console.info('array info', array.join('')); 
+                        console.info('choosed for append', $('#volumn-dropdown-menu'));
+                        $('#volumn-dropdown-menu').append(array.join(''));
+                        console.info('choosed for append end', $('#volumn-dropdown-menu'));
+                        _this.bindVolumnEvent();
+                    }
+                });
+            }
+        },
+        bindVolumnEvent(){
+            var _this = this;
+            $('#choose-volumn .dropdown-menu li').on('click',function () {
+                var id = $(this).attr('data-id');
+                var name = $(this).find('a').text();
+
+                $('#choosed-volumn').text(name);
+                $(this).parent().hide();
+                console.log('id',id);
+                _this.getDocList(id);
+                return false;
+            });
+            $('#dropdownMenu2').on('click',function() {
+                $('#choose-volumn .dropdown-menu').toggle();
+            })
+        },
+        getDocList: function(volumn_id) {
+            var _this = this;
+            $.ajax(Url + "/volumne/" + volumn_id).done(function(response){
+                if (!!!response.error){
+                    _this.$set("volumnInfo", response);
+                }else{
+                    _this.$set("error", 2);
+                }
+            });
         },
         download: function(index){
 
@@ -116,13 +247,9 @@ export default{
         },
         explorer: function(index){
             var _this = this
-            var url = FileUrl + "/files/" + _this.docData[index].filesname
-            _this.$set('resourceurl', url)
-            _this.$set('file_type', _this.docData[index].file_type)
-            console.info('explorer params:', url, _this.docData[index].file_type)
-            var targetUrl = "view?id=" + _this.docData[index].id;
-            console.info('targetUrl', targetUrl);
-            if (_this.docData[index].id != undefined){
+            var targetUrl = "view?id=" + _this.volumnInfo.docs[index].id;
+            console.info('explorer targetUrl:', targetUrl);
+            if (_this.volumnInfo.docs[index].id != undefined){
                 this.$router.go(targetUrl)
             }else{
                 this.$set('error', 1);
