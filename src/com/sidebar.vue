@@ -9,7 +9,7 @@ ul(class="nav nav-list bs-docs-sidenav")
         a(v-link="{path:'/explore'}") 
             i(class="icon-chevron-right")
                 档案查找
-    li(class="foruser foroption notroot")
+    li(class="foruser foroption forroot")
         a(v-link="{path:'/apply'}") 
             i(class="icon-chevron-right")
                 借阅申请

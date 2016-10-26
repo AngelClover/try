@@ -11,8 +11,8 @@
         </div>
         -->
         <div class="form-group">
-            <label>文件编号:</label>
-            <input type="text" v-model="newapply.fileid" value="{{id}}"/>
+            <label>卷编号:</label>
+            <input type="text" v-model="newapply.volumn_id" value="{{id}}"/>
         </div>
         <div class="form-group">
             <label>起始时间:</label>
@@ -35,18 +35,20 @@
             <thead>
                 <tr>
                     <td> 借阅人 </td>
-                    <td> 借阅文件编号 </td>
+                    <td> 借阅卷编号 </td>
                     <td> 起始时间 </td>
                     <td> 结束时间 </td>
+                    <td> 是否被拒绝 </td>
                     <td> </td>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="cl in applyData">
                     <td>{{cl.user_id}}</td>
-                    <td>{{cl.doc_id}}</td>
+                    <td>{{cl.volumne_id}}</td>
                     <td>{{cl.start_time}}</td>
                     <td>{{cl.end_time}}</td>
+                    <td>{{cl.denied}}</td>
                     <td :class="'text-center'"><button @click="deleteborrow($index)">撤销</button></td>
                 </tr>
             </tbody>
@@ -66,7 +68,7 @@ import {Url} from '../config.js'
 export default{
     data:{
         newapply: {
-            fileid: 0,
+            volumn_id: 0,
             starttime: "",
             endtime: "forever",
         },
@@ -109,67 +111,70 @@ export default{
             if (end == undefined || end == ""){
                 end = "forever"
             }
-            var url = Url + "/apply?action=add&username=" + this.$store.state.name + "&token=" + this.$store.state.token + "&to_doc_id_list=" + this.newapply.fileid + "&start_time=" + (_this.newapply.starttime == undefined? "" : _this.newapply.starttime) + "&end_time=" + end; 
-            console.info('add borrow', url)
-            $(document).get(url, function(response){
-                console.info('add apply res:', response)
-                if (!!!response.error){
-                    console.info('add succ')
-                      _this.getlist()
-                }else{
-                    _this.$set('error', response.error)
-                    _this.$set('message', response.message)
-                }
-            })
+            var url = Url + "/apply"; //this.$store.state.name + "&token=" + this.$store.state.token + "&to_doc_id_list=" + this.newapply.fileid + "&start_time=" + (_this.newapply.starttime == undefined? "" : _this.newapply.starttime) + "&end_time=" + end; 
+            var content = {};
+            content["volumne_id"] = this.newapply.volumn_id;
+            content["start_time"] = this.newapply.starttime;
+            content["end_time"] = end;
+
+            console.info('add borrow', url);
+            $.ajax(url, {
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(content),
+                success: function(response){
+                    console.info('add apply res succ:', response);//response for undefined
+                    _this.getlist()
+                },
+                error: function(res){
+                    console.info('add apply res error:', res)
+                        _this.$set("error", 1);
+                    _this.$set("message", "ajax error");
+                },
+            });
         },
         getlist: function(){
             var _this = this
                 /*
-            if (_this.$store.state.isadmin != true){
-                _this.$set('error', 1)
-                _this.$set('message', 'no right to view the list')
-                return false;
-            }
-            */
-            var reqUrl = Url + "/apply?"
-            var act = "get"
-            if (_this.$store.state.isadmin == true){
-                act = "get_all"
-            }
-            if (_this.$store.state.name == 'root'){
-                _this.$set('error', 1)
-                _this.$set('message', 'admin account need not to see this page')
-                return
-            }
-            var url = reqUrl + "action=" + act + "&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token;
+                   if (_this.$store.state.isadmin != true){
+                   _this.$set('error', 1)
+                   _this.$set('message', 'no right to view the list')
+                   return false;
+                   }
+                 */
+                var url = Url + "/apply";
             console.info('apply list ', url)
-            $(document).get(url, function(res){
-                console.info('apply list res:', res);
-                _this.$set('error', res.error)
-                _this.$set('message', res.message)
-                if (!!!res.error){
-                    console.log('succ')
-                    //if (_this.error == 0 && _this.message == ""){
+                $.ajax(url, {
+                    method : "GET",
+                    success: function(res){
+                        console.info('apply list res succ:', res);
+                        console.log('succ')
                         _this.$set('applyData', res.data)
-                    //}
-                }
-            })
+                    },
+                    error: function(res){
+                        console.info("apply list res error:", res);
+                        _this.$set('error', 1);
+                        _this.$set("message", "get list ajax error");
+                    }
+                });
         },
         deleteborrow: function(index){
             //this.gridData.splice(index,1);
-            var _this = this
-            var url = Url + "/apply?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&apply_id=" + _this.applyData[index].id;
+            var _this = this;
+            //var url = Url + "/apply?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&apply_id=" + _this.applyData[index].id;
+            var url = Url + "/apply/" + this.applyData[index].id;
             console.info('apply borrow', url);
-            $(document).get(url, function(response){
-                console.info('apply borrow res:', response)
-              if (!!!response.error){
-                  console.info('delete succ')
-                      _this.getlist()
-              }else{
-                _this.$set('error', response.error)
-                _this.$set('message', response.message)
-              }
-            })
+            $.ajax(url, {
+                method: "DELETE",
+                success: function(response){
+                    console.info('apply borrow res delete :', response)
+                        _this.getlist()
+                },
+                error: function(res){
+                    _this.$set('error', 3);
+                    _this.$set('message', "delete borrow ajax error");
+                },
+            });
         },
         getQueryString: function () {
             var query_string = {};

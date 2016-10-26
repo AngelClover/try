@@ -53,11 +53,19 @@ export default {
         }
     },
     ready: function(){
-        this.getlist(0)
+        this.$set("page", 1);
+        this.getlist(1)
     },
     methods:{
         changeList: function(){
-            this.getlist(this.page)
+            var index = this.$get("page");
+            if (index <= 0){
+                index = 1;
+                this.$set("error", 3);
+                this.$set("message", "page num must >0");
+            }else{
+                this.getlist(this.page);
+            }
         },
         getlist: function(index){
             var _this = this
@@ -66,16 +74,22 @@ export default {
                 _this.$set('message', 'no right to view the history list')
                 return false;
             }
-            var url = Url + "/viewlog?page=" + index + "&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token;
-            $(document).get(url, function(response){
-                console.info('view log', response)
-                if (!!!response.error){
-                    console.info('view log data', response.data)
-                    _this.$set('logData', response.data)
-                }else{
-                    _this.$set('error', response.error)
-                    _this.$set('message', response.message)
-                }
+            var url = Url + "/viewlog";
+            var content = {};
+            content["page"] = index;
+            console.info("get log view list: ", content);
+            var str = JSON.stringify(content);
+            $.ajax(url, {
+                method: "POST",
+                data: str,
+                success: function(response){
+                    console.info('view log', response)
+                    _this.$set('logData', response)
+                },
+                error: function(res){
+                    _this.$set('error', 2);
+                    _this.$set('message', "ajax error");
+                },
             })
         }
     }

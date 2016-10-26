@@ -72,15 +72,18 @@ module.exports = {
             var head = new Headers();
             head.append('Authorization', target);
             //head['Authorization'] = target;
-            console.info(head);
             var target_auth_string = "Basic " + target;
+            console.info(head, target);
             $.ajax({
                 url: Url + '/api/token',
                 method: 'POST',
                 beforeSend: function(xhr){
-                    console.info('beforeSend');
+                    console.info('beforeSend', target_auth_string, window.btoa(getToken() + ":"));
+                    var t = xhr.getAllResponseHeaders();
+                    console.log(t);
                     xhr.setRequestHeader("Authorization", target_auth_string);
                 },
+                global: false,
                 success: function(response){
                     // 需要在路右侧保存session
                     var user = {}
@@ -92,7 +95,15 @@ module.exports = {
                     saveAuthString(user.auth_string);
                     saveUser(user);
                     $(document).ajaxSend(function(event, xhr, options){
-                        xhr.setRequestHeader("Authorization", "Basic " + window.btoa(getToken() + ":"));
+                        /*
+                        var h = target_auth_string;
+                        if (h == undefined || h == null){
+                            h = "Basic " + window.btoa(getToken() + ":");
+                        }
+                        */
+                        var h = "Basic " + window.btoa(getToken() + ":");
+                        console.log("ajaxSend ", h);
+                        xhr.setRequestHeader("Authorization", h);
                     });
                     self.$router.go('/home');
                 },
