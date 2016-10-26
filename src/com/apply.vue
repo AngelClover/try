@@ -149,7 +149,7 @@ export default{
                     success: function(res){
                         console.info('apply list res succ:', res);
                         console.log('succ')
-                        _this.$set('applyData', res.data)
+                        _this.$set('applyData', res)
                     },
                     error: function(res){
                         console.info("apply list res error:", res);
@@ -173,6 +173,7 @@ export default{
                 error: function(res){
                     _this.$set('error', 3);
                     _this.$set('message', "delete borrow ajax error");
+                    _this.getlist();
                 },
             });
         },
