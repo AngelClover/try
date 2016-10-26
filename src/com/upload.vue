@@ -72,7 +72,9 @@
 <script>
 import {Url} from '../config.js'
 module.exports = {
-    el:'#login-form',
+    el: () => {
+        return '#login-form';
+    },
     name: 'addOrganization',
     data: {
         docData: [],

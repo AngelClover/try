@@ -56,7 +56,10 @@
                     <td> 档案名 </td>
                     <td> 门类编号</td>
                     <td> 作者id</td>
-                    <td> </td>
+                    <td> 操作</td>
+                        <td v-for="item in volumnInfo.doc_properties">
+                            {{item.name}}
+                        </td>
                 </tr>
             </thead>
             <tbody>
@@ -71,8 +74,52 @@
             </tbody>
         </table>
     </div>
+    <div>
+        <table border="2">
+            <tr>
+                <th>门类编号</th>
+                <th>门类名</th>
+                <th>门类层级</th>
+                <th>父门类编号</th>
+                <th>是否为新规则档案</th>
+                <th>特殊属性</th>
+            </tr>
+            <tr>
+                <td> {{docClassInfo.id}} </td>
+                <td> {{docClassInfo.name}} </td>
+                <td> {{docClassInfo.level}} </td>
+                <td> {{docClassInfo.parent_id}} </td>
+                <td> {{docClassInfo.type}} </td>
+                <td v-for="item in docClassInfo.properties">
+                    {{item.name}}
+                </td>
+            </tr>
+        </table>
+                
+            <!--
+        </table>
+        <table border="2">
+            <tr>
+                <td>属性编号</td>
+                <td>属性名</td>
+            </tr>
+            <tr v-for="item in docClassInfo.properties">
+                <td>{{item.order}} </td>
+                <td>{{item.name}} </td>
+            </tr>
+        </table>
+            -->
+    </div>
     <div v-for="value in docClassInfo">
         {{$key}}:{{value}}
+    </div>
+    <div>
+        <div v-for="item in docClassInfo.properties">
+            {{$index}}:
+            <div v-for="value in item">
+                {{$key}}:{{value}}
+            </div>
+        </div>
     </div>
     <div v-for="item in volumnInfo.docs">
         {{$index}}:

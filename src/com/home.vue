@@ -10,11 +10,15 @@
 </template>
 
 <script>
+import {hideElement} from "../vuex/actions"
 	export default {
 		data: function() {
 			return {
 				username: 'test'
 			}
-		}
+		},
+        ready: () => {
+            hideElement();
+        },
 	}
 </script>

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import {SET_USERINFO,DELETE_USER_INFO,SET_MSGS} from './mutation_types'
+import {getUser} from "../auth"
 
 Vue.use(Vuex);
 export const setError = ({dispatch}, error) => {
@@ -30,3 +31,20 @@ export const login_action = ({dispatch},type,user) => {
         dispatch(SET_MSGS, ["login invalid"])
     }
 }
+
+export const hideElement = () =>{
+//$(document).ready(function(){
+    //$(".foroption").hide();
+    var user = getUser();
+    console.info("sidebar ready", user, $(".foroption").size());
+    if (user == undefined || user.username == undefined || user.username == ""){
+    }else if(user.username == "root"){
+        //$(".forroot").show();
+        $(".notroot").hide();
+        console.info("sidebar ready", user.username, $(".forroot").size());
+    }else {
+        //$(".foruser").show();
+        $(".notuser").hide();
+        console.info("sidebar ready", user.username, $(".foruser").size());
+    }
+}//);

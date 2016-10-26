@@ -31,7 +31,10 @@
                     <td>{{user.id}}</td>
                     <td>{{user.name}}</td>
                     <td>{{user.create_user_id}}</td>
+                    <td> </td>
+                    <!--
                     <td :class="'text-center'"><button v-if="user.name != 'root' && user.name != 'test'" @click="delUser($index)">Delete</button></td>
+                    -->
                 </tr>
             </tbody>
         </table>
@@ -77,36 +80,58 @@ export default {
                 return false;
             }
             var username = _this.$store.state.name
-            var reqUrl = Url + "/user?"
-            var url = reqUrl + "action=get_all&username=" + username;
-            console.info('get all users', url)
-            $(document).get(url, function(res){
-                console.info('get_all users res:', res);
-                _this.setMessage(res)
-                if (!!!res.error){
-                    console.log('succ')
-                    //if (_this.error == 0 && _this.errmsg == ""){
-                        _this.$set('userData', res.data)
-                    //}
-                }
-            })
+            var url = Url + "/user";
+            //var url = reqUrl + "action=get_all&username=" + username;
+            console.info('get all users', url);
+            //TODO to check
+            $.ajax(url, {
+                success: function(res){
+                    console.info('get_all users res:', res);
+                    if (!!!res.error){
+                        console.log('get user list succ');
+                        _this.$set('userData', res);
+                    }
+                },
+                error: function(res){
+                    console.info('get user list', res);
+                    _this.$set('error', 2);
+                },
+            });
         },
         addUser: function(){
             var _this = this
             var create_user = "test"
-            var reqUrl = Url + "/user?"
-            var url = reqUrl + "action=add&username=" + this.newuser.name + "&password=" + this.newuser.password + "&create_user=" + _this.$store.state.name;
-            console.info('add user', url)
-            $(document).get(url, function(res){
-                console.info('add user res:', res);
-                _this.setMessage(res)
-                if (!!!res.error){
-                    console.log('succ')
-                        _this.getUsers()
-                }
-            })
+            var url = Url + "/api/add_user"
+            var content = {
+                username : "null",
+                password : "null",
+            };
+            content["username"] = this.$get("newuser").name;
+            content["password"] = this.$get("newuser").password;
+            //var url = reqUrl + "action=add&username=" + this.newuser.name + "&password=" + this.newuser.password + "&create_user=" + _this.$store.state.name;
+            console.info('add user', url, content, JSON.stringify(content));
+
+            //TODO test for request ok
+            $.ajax(url, {
+                data : JSON.stringify(content),
+                contentType : "application/json",
+                method: "POST",
+                success : function(res){
+                    console.info('add user res:', res);
+                    _this.setMessage(res);
+                    if (!!!res.error){
+                        console.log('succ')
+                            _this.getUsers()
+                    }
+                },
+                error: function(res){
+                    console.info("ajax error", res);
+                    _this.$set('error', 2);
+                },
+            });
         },
         delUser: function(index){
+            //BAD 
             var _this = this
             var delete_username = this.userData[index].name
             var reqUrl = Url + "/user?"

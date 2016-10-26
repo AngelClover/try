@@ -18,6 +18,7 @@
             后一页
         </button>
     <div>
+        <!--
     <div v-for="value in docData">
         {{$key}}:{{value}}
     </div>
@@ -26,6 +27,37 @@
         <div v-for="value in item">
             {{$key}}:{{value}}
         </div>
+    </div>
+        -->
+    <div>
+        <table border="2">
+            <tr>
+                <th>件id</th>
+                <th>件名</th>
+                <th>所属卷id</th>
+                <th>所属卷名</th>
+                <th>上传用户编号</th>
+                <th>上传时间</th>
+            </tr>
+            <tr>
+                <td>{{docData.id}}</td>
+                <td>{{docData.name}}</td>
+                <td>{{docData.volumne_id}}</td>
+                <td>{{docData.volume}}</td>
+                <td>{{docData.uploader}}</td>
+                <td>{{docData.upload_time}}</td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <table border="2">
+            <tr><th>件属性编号</th><th>属性名</th><th>属性值</th></tr>
+            <tr v-for="item in docData.values">
+                <td>{{$index}}</td>
+                <td>{{item.property_name}}</td>
+                <td>{{item.value}}</td>
+            </tr>
+        </table>
     </div>
     <div id="pdfexplorer" class="container" >
     </div>

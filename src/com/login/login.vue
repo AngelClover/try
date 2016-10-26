@@ -92,7 +92,7 @@ module.exports = {
                     saveAuthString(user.auth_string);
                     saveUser(user);
                     $(document).ajaxSend(function(event, xhr, options){
-                        xhr.setRequestHeader("Authorization", "Basic " + getToken());
+                        xhr.setRequestHeader("Authorization", "Basic " + window.btoa(getToken() + ":"));
                     });
                     self.$router.go('/home');
                 },
