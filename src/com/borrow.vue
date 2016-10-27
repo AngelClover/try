@@ -58,6 +58,7 @@
 
 
 <script>
+//ABANDONed
 import {Url} from '../config.js'
 export default{
     data:{

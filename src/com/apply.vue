@@ -30,7 +30,7 @@
         </div>
         </fieldset> 
     </div>
-    <div v-if="$store.state.isadmin != true">
+    <div >
         <table  class="table table-bordered">
             <thead>
                 <tr>
@@ -39,6 +39,7 @@
                     <td> 起始时间 </td>
                     <td> 结束时间 </td>
                     <td> 是否被拒绝 </td>
+                    <td> </td>
                     <td> </td>
                 </tr>
             </thead>
@@ -49,7 +50,10 @@
                     <td>{{cl.start_time}}</td>
                     <td>{{cl.end_time}}</td>
                     <td>{{cl.denied}}</td>
-                    <td :class="'text-center'"><button @click="deleteborrow($index)">撤销</button></td>
+                    <td :class="'text-center'" v-if="$store.state.isadmin != true"><button @click="deleteborrow($index)">撤销</button></td>
+                    <td :class="'text-center'" v-if="$store.state.isadmin != true"></td>
+                    <td :class="'text-center'" v-if="$store.state.isadmin == true"><button @click="approve($index)">批准</button></td>
+                    <td :class="'text-center'" v-if="$store.state.isadmin == true"><button @click="deny($index)">拒绝</button></td>
                 </tr>
             </tbody>
         </table>
@@ -197,7 +201,45 @@ export default{
                         }
             }
             return query_string;
-        }
+        },
+        approve: function(index){
+            //this.gridData.splice(index,1);
+            var _this = this;
+            //var url = Url + "/apply?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&apply_id=" + _this.applyData[index].id;
+            var url = Url + "/api/auth/authorize?action=accept&apply_for_id=" + this.applyData[index].id;
+            console.info('approve', url);
+            $.ajax(url, {
+                method: "GET",
+                success: function(response){
+                    console.info('approve', response)
+                        _this.getlist()
+                },
+                error: function(res){
+                    _this.$set('error', 3);
+                    _this.$set('message', "approve ajax error");
+                    _this.getlist();
+                },
+            });
+        },
+        deny: function(index){
+            //this.gridData.splice(index,1);
+            var _this = this;
+            //var url = Url + "/apply?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&apply_id=" + _this.applyData[index].id;
+            var url = Url + "/api/auth/authorize?action=deny&apply_for_id=" + this.applyData[index].id;
+            console.info('approve', url);
+            $.ajax(url, {
+                method: "GET",
+                success: function(response){
+                    console.info('deny', response)
+                        _this.getlist()
+                },
+                error: function(res){
+                    _this.$set('error', 3);
+                    _this.$set('message', "deny ajax error");
+                    _this.getlist();
+                },
+            });
+        },
     }
 }
 </script>

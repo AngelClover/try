@@ -20,8 +20,13 @@
         </table>
         <div class="form-group pull-right">
             <label>第</label>
-            <input type="text" v-model="page" v-on:change="changeList" place-holder="{{page}}"/>
-            <label>页</label>
+            <input type="text" v-model="page" place-holder="{{page}}"/>
+            <label>页, 共{{pageNum}}页</label>
+            <br/>
+            <label>每页</label>
+            <input type="text" v-model="pageSize"  place-holder="{{pageSize}}"/>
+            <label>条, 共{{logNum}}条</label>
+            <button v-on:click="fresh">确定</button>
         </div>
     </div>
 
@@ -41,7 +46,10 @@ export default {
         logData : [],
         error: 0,
         message: "",
-        page: 0
+        page: 0,
+        pageNum: 0,
+        pageSize: 10,
+        logNum: 0,
     },
     route: {
         canActivate: function(){
@@ -54,10 +62,21 @@ export default {
     },
     ready: function(){
         this.$set("page", 1);
+        this.$set("pageSize", 10);
         this.getlist(1)
     },
     methods:{
         changeList: function(){
+            var index = this.$get("page");
+            if (index <= 0){
+                index = 1;
+                this.$set("error", 3);
+                this.$set("message", "page num must >0");
+            }else{
+                this.getlist(this.page);
+            }
+        },
+        fresh: function(){
             var index = this.$get("page");
             if (index <= 0){
                 index = 1;
@@ -77,14 +96,19 @@ export default {
             var url = Url + "/viewlog";
             var content = {};
             content["page"] = index;
+            content["page_size"] = this.$get('pageSize');
             console.info("get log view list: ", content);
             var str = JSON.stringify(content);
             $.ajax(url, {
                 method: "POST",
                 data: str,
+                contentType: "application/json",
                 success: function(response){
-                    console.info('view log', response)
-                    _this.$set('logData', response)
+                    console.info('view log', response, response.data[1]);
+                    _this.$set('logData', response.data);
+                    _this.$set('logNum', response.log_num);
+                    _this.$set('pageNum', response.page_num);
+                    //_this.$set('pageSize', response.page_size);
                 },
                 error: function(res){
                     _this.$set('error', 2);
