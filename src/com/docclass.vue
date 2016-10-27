@@ -29,8 +29,23 @@
                 </select>
             </div>
             <div class="form-group">
+                <label>是否是新规则(0,1)</label>
+                <input type="text" v-model="newclass.type"/>
+            </div>
+            <div class="form-group">
+                <p>特殊属性:</p><br/>
+                <div v-for="data in newclass.properties">
+                    <p>{{data}}</p><br/>
+                </div>
+            </div>
+            <div class="form-group">
                 <label></label>
                 <button @click="createclass">Create</button>
+            </div>
+            <div>
+                <input type="text" v-model="newForAdd"/>
+                <button @click=addProp>新增 </button>
+                <button @click=minusProp>减少 </button>
             </div>
         </fieldset>
     </div>
@@ -72,8 +87,12 @@ export default{
     data: {
         newclass:{
             name: "新门类名称",
-            parent_id: 0
+            parent_id: 0,
+            type: 0,
+            count: 0,
+            properties: [],
         },
+        newForAdd: "",
         gridData: [],
         error: 0,
         errmsg:"",
@@ -105,6 +124,15 @@ export default{
         }else{
             this.$router.go('/login')
         }
+        var x = {
+            name: "新门类名称",
+            parent_id: 0,
+            type: 0,
+            count: 0,
+            properties: [],
+        }
+        this.$set("newclass", x);
+
         //console.log(this.girdData)
     },
     /*
@@ -121,6 +149,17 @@ export default{
     },
     */
     methods: {
+        addProp: function(){
+            var x = this.$get("newclass");
+            console.log(x);
+            x["properties"].push(this.$get("newForAdd"));
+            this.$set("newclass", x);
+        },
+        minusProp: function(){
+            var x = this.$get("newclass");
+            x["properties"] = x["properties"].slice(0, x["properties"].length - 1);
+            this.$set("newclass", x);
+        },
         getDocclass: function() {
             var _this = this
             console.info(_this)

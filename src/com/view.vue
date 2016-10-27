@@ -92,7 +92,7 @@ export default{
         this.$set('showtif', false);
         //this.renderpdf()
         //this.$set('doc_id', this.getQueryString().id);
-        this.$set('doc_id', 7);
+        this.$set('doc_id', this.getQueryString());
         this.$set('page_index', 0);
         this.$set('docData', {content: "nocontent"});
         this.getDocInfo(this.$get('doc_id'));
