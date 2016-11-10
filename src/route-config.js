@@ -11,6 +11,7 @@ import borrow from './com/borrow.vue'
 import apply from './com/apply.vue'
 import approve from './com/approve.vue'
 import view from './com/view.vue'
+import search from './com/search.vue'
 import {getToken} from './auth'
 
 export default{
@@ -51,5 +52,8 @@ export default{
     },
     'view': {
         component: view
+    },
+    'search': {
+        component: search
     }
 }

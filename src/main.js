@@ -12,6 +12,7 @@ import {getToken} from './auth'
 //import ap from './app.vue'
 
 Vue.config.debug=true
+Vue.config.devtools = true
 Vue.use(Router)
 Vue.use(resource)
 Vue.http.options.headers={

@@ -62,7 +62,7 @@
     <div id="pdfexplorer" class="container" >
     </div>
     <div id="picexplorer" class="container" v-if="showjpg">
-        <img v-bind:src="resourceurl" class="img-rounded"></img>
+        <img v-bind:src="resourceUrl" class="img-rounded"></img>
     </div>
     <div class="container" id="tifexplorer">
         
@@ -85,14 +85,16 @@ export default{
         showjpg: false,
         showtiff: false,
         page_index: 0,
+        resourceUrl: "",
     },
     ready: function(){
         this.$set('showpdf', false);
         this.$set('showjpg', false);
         this.$set('showtif', false);
         //this.renderpdf()
-        //this.$set('doc_id', this.getQueryString().id);
-        this.$set('doc_id', this.getQueryString());
+        this.$set('doc_id', this.getQueryString().id);
+        //this.$set('doc_id', this.getQueryString());
+        //this.$set('doc_id', 8);//TODO: DELETE for test
         this.$set('page_index', 0);
         this.$set('docData', {content: "nocontent"});
         this.getDocInfo(this.$get('doc_id'));
@@ -129,6 +131,7 @@ export default{
                 //$(document).get(url);
                 //$.get(url);
                 //TODO: with no document, lack of Auth Header
+                console.info("get doc url", url);
                 $.get(url, function(response){
                     console.info("doc", doc_id, "get", response);
                     if (!!!response.error){

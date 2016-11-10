@@ -93,6 +93,7 @@ export default{
     ready: function(){
         this.getmyapplylist();
         this.$set('id',this.getQueryString().id);
+        this.$set('newapply.volumn_id',this.getQueryString().id);
         $('[id=datetimepicker]').datetimepicker({
             format: 'yyyy-mm-dd hh:ii:ss',
             language:'zh-CN',

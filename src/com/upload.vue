@@ -11,12 +11,29 @@
     }
 </style>
 <template>
-    <form id="file-form" v-bind:action={{uploadUrl}} method="post" enctype="multipart/form-data">
-        <input name="file" type="file" value="上传文件" v-on:change="checkFile">
-        <input name="action" type="hidden" value="upload">
-        <input name="username" type="hidden" value="test">
-        <!-- <label>门类编号:</label>
-        <input name="docclass_id" value='0'> -->
+    <div>
+        请打包(.zip)上传<br/>
+    </div>
+    <input name="zip_file" type="file" value="上传文件" v-on:change="checkFile">
+        <input name="docclass_id" type="hidden">
+        <div class="dropdown" id="class-dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span class="selected-name">选择门类</span>
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            </ul>
+        </div>
+        
+
+        <button type="submit" id="updateButton" data-loading-text="Loading..." class="btn btn-primary" autocomplete="off" v-on:click="newSubmit">
+          上传
+        </button>
+        <div class="error"></div>
+    <!-- <form id="file-form" v-bind:action={{uploadUrl}} method="post" enctype="multipart/form-data"> -->
+    <!--
+    <form id="file-form" action={{uploadUrl}} method="post" enctype="multipart/form-data">
+        <input name="zip_file" type="file" value="上传文件" v-on:change="checkFile">
         
         
         <input name="docclass_id" type="hidden">
@@ -30,14 +47,16 @@
         </div>
         
 
-        <button type="button" id="updateButton" data-loading-text="Loading..." class="btn btn-primary" autocomplete="off" v-on:click="submit">
+        <button type="submit" id="updateButton" data-loading-text="Loading..." class="btn btn-primary" autocomplete="off" v-on:click="submit">
           上传
         </button>
         <div class="error"></div>
     </form>
+    -->
     <!--
     <iframe id="iframe" name="iframe" width="1" height="1" style="display:none"></iframe>
     -->
+    <!--
     <div>
         <table  class="table table-bordered">
             <thead>
@@ -61,6 +80,7 @@
             </tbody>
         </table>
     </div>
+    -->
     <br/>
     <div v-if="error > 0" color="red">
         Error Num: {{error}}<br/>
@@ -91,29 +111,78 @@ module.exports = {
     },
     ready: function() {
         this.getClasses();
-        this.getDoclist();
-        this.$set('uploadUrl', Url + '/doc');
+        //this.getDoclist();
+        this.$set('uploadUrl', Url + '/api/batch_volumne');
     },
     methods: {
+        newSubmit: function(){
+            var content = new FormData();
+            var url = this.$get("uploadUrl");
+            content.append("docclass_id", $("input[name=docclass_id]").val());
+            content.append("zip_file", $("input[name=zip_file]")[0].files[0]);
+            console.info("new submit url:", url, content, $("input[name=docclass_id]").val(), $("input[name=zip_file]")[0].files[0].size);
+            //window.alert("upload begin");
+            $.ajax(url, {
+                method: "POST",
+                contentType: false,//"multipart/form-data",
+                processData: false,
+                data: content,
+                success: function(res){
+                    console.info("new submit success", res);
+                    window.alert("upload success");
+                },
+                error: function(res){
+                    console.info("new submit error", res);
+                },
+            });
+        },
         submit: function() {
-            var ele = $("input[name=file]")[0];
-            if (!this.checkFile(ele.files[0]) || !this.validateClass()) return false;
+            var ele = $("input[name=zip_file]")[0];
+            console.info("qqqqqq");
+            console.info("qqq", this.$get("uploadUrl"));
+            console.info("qqq", $("input[name=docclass_id]").val());
+            console.info("qqq", $("input[name=zip_file]").length);
+            //if (!this.checkFile(ele.files[0]) || !this.validateClass()) return false;
             // 解决跨域提交问题，后续可以使用被注释的代码
             var _this = this;
-            $('#file-form')[0].submit(function (){
-                _this.$router.go('/upload')
-            })
-            _this.$router.go('/upload')
+            console.info("qqqqqq");
+            $('#file-form')[0].ajaxSubmit(function (res){
+                //_this.$router.go('/upload')
+                console.info("qqqqqqpppp succ", res);
+                return false;
+            });
+            console.info("qqqqqq");
+            //_this.$router.go('/upload')
+            //this.iframSubmit();
+            return false;
+        },
+        saveReport: function(){
+            var ele = $("input[name=zip_file]")[0];
+            console.info("saveReport");
+            console.info("saveReport", this.$get("uploadUrl"));
+            console.info("saveReport", $("input[name=docclass_id]").val());
+            console.info("saveReport", $("input[name=zip_file]").length);
+            //if (!this.checkFile(ele.files[0]) || !this.validateClass()) return false;
+            // 解决跨域提交问题，后续可以使用被注释的代码
+            var _this = this;
+            console.info("saveReport");
+            $('#file-form')[0].submit(function (response){
+                //_this.$router.go('/upload')
+                console.info("saveReport res succ", response);
+                return false;
+            });
+            console.info("saveReport");
+            //_this.$router.go('/upload')
             //this.iframSubmit();
             return false;
         },
         checkFile: function(event) {
-            var MAX_SIZE = 32 * 1024 * 1024;
+            var MAX_SIZE = 32 * 1024 * 1024 * 1024;
             var file = event && event.target ? event.target.files[0] : event;
             typeof(file) == 'undefined' && this.showErrors('请选择文件上传');
             var size = file.size;
             
-            size > MAX_SIZE && this.showErrors('文件大于32M，请上传小于32M的文件');
+            size > MAX_SIZE && this.showErrors('文件大于32G，请上传小于32G的文件');
             return size > MAX_SIZE ? false : true;
         },
         validateClass: function() {
@@ -131,6 +200,7 @@ module.exports = {
             // TODO
             iframe.attr('action','xxx');
             iframe.attr('target','iframe');
+            console.info("iframeSubmit");
             iframe[0].submit();
         },
         getClasses: function() {

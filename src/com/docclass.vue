@@ -33,22 +33,25 @@
                 <input type="text" v-model="newclass.type"/>
             </div>
             <div class="form-group">
-                <p>特殊属性:</p><br/>
+                <label>特殊属性:</label>
+                <div>
+                    <input type="text" v-model="newForAdd"/>
+                    <button @click=addProp>新增 </button>
+                    <button @click=minusProp>减少 </button>
+                </div>
+                <br/>
                 <div v-for="data in newclass.properties">
                     <p>{{data}}</p><br/>
                 </div>
             </div>
             <div class="form-group">
                 <label></label>
-                <button @click="createclass">Create</button>
-            </div>
-            <div>
-                <input type="text" v-model="newForAdd"/>
-                <button @click=addProp>新增 </button>
-                <button @click=minusProp>减少 </button>
+                <button @click="createclass">创建</button>
             </div>
         </fieldset>
     </div>
+    <br/>
+    <br/>
     <div>
         <table  class="table table-bordered">
             <thead>
@@ -165,7 +168,18 @@ export default{
             console.info(_this)
             //var url = Url + "/docclass?action=get_all&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token
             var url = Url + "/docclass";
-            console.log(url)
+            console.log(url);
+            $.ajax(url, {
+                method: "GET",
+                success: function(response){
+                    console.info("get docclass list succ", response);
+                    _this.$set('gridData', response.docclass);
+                },
+                error: function(response){
+                    console.info("get docclass list error", response);
+                },
+            });
+                /*
             $.ajax(url).done(function (response) {
             //$.get(url, function (response) {
             //$(document).get(url, function (response) {
@@ -178,6 +192,7 @@ export default{
                     _this.$set('errmsg', response.message)
                 }
             })
+            */
             //console.info('vuex getdocs', _this.getName())
             //console.info('vuex getters', _this.$store.state.name)
             //console.info('vuex getters', _this.$store.state.id)
@@ -194,8 +209,20 @@ export default{
             var url = Url + "/docclass";
             //var url = Url + "/docclass?action=del&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&name=" + this.gridData[index].name + "&docclass_id=" + this.gridData[index].id + "&parent_id=" + this.gridData[index].parent_id;
             var _this = this;
+            url += "/" + this.gridData[index].id;
             console.info('delete class', url);
-            //TODO: check
+
+            $.ajax(url, {
+                method: "DELETE",
+                success: function(response){
+                    console.info("delete docclass list succ", response);
+                    _this.getDocclass();
+                },
+                error: function(response){
+                    console.info("delete docclass list error", response);
+                },
+            });
+            /*
             $.ajax(url,{METHOD:"DELETE"}).done(function(response){
             //$(document).get(url, function(response){
                 console.info('delete class res:', response)
@@ -207,13 +234,27 @@ export default{
                 _this.$set('errmsg', response.message)
               }
             })
+            */
         },
         createclass: function(){
             var _this = this
             //var url = Url + "/docclass?action=add&username=" + _this.$store.state.name + "&token=" + _this.$store.state.token + "&name=" + this.newclass.name + "&parent_id=" + this.newclass.parent_id; 
             var url = Url + "/docclass";
-            console.info('add class', url);
-            //TODO: check
+            var content = this.$get("newclass");
+            console.info('add class', url, content);
+            $.ajax(url, {
+                method: "POST",
+                contentType: "application/x-www-form-urlencoded",
+                data: content,
+                success: function(response){
+                    console.info("delete docclass list succ", response);
+                    _this.getDocclass();
+                },
+                error: function(response){
+                    console.info("delete docclass list error", response);
+                },
+            });
+            /*
             $.ajax(url,{METHOD:"PUT"}).done(function(response){
             //$(document).get(url, function(response){
                 console.info('add class res:', response)
@@ -225,6 +266,7 @@ export default{
                         _this.$set('errmsg', response.message)
                 }
             })
+            */
 
         }
         

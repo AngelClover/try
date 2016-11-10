@@ -1,2 +1,2 @@
-export const Url = "http://angelclover.win:8080";
-export const FileUrl = "http://angelclover.win:8080";
+export const Url = "http://angelclover.win:8002";
+export const FileUrl = Url;// "http://angelclover.win:8080";

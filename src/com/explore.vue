@@ -30,6 +30,7 @@
     <form id="file-form" v-bind:action={{uploadUrl}} method="post" enctype="multipart/form-data">
         <!-- <label>门类编号:</label>
         <input name="docclass_id" value='0'> -->
+        <label>门类: </label>
         <input name="docclass_id" type="hidden">
         <div class="dropdown" id="choose-docclass">
             <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -39,6 +40,43 @@
             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
             </ul>
         </div>
+    <div>
+        <table border="2">
+            <tr>
+                <th>门类编号</th>
+                <th>门类名</th>
+                <th>门类层级</th>
+                <th>父门类编号</th>
+                <th>是否为旧规则档案</th>
+                <th>特殊属性</th>
+            </tr>
+            <tr>
+                <td> {{docClassInfo.id}} </td>
+                <td> {{docClassInfo.name}} </td>
+                <td> {{docClassInfo.level}} </td>
+                <td> {{docClassInfo.parent_id}} </td>
+                <td> {{docClassInfo.type}} </td>
+                <td v-for="item in docClassInfo.properties">
+                    {{item.name}}
+                </td>
+            </tr>
+        </table>
+                
+            <!--
+        </table>
+        <table border="2">
+            <tr>
+                <td>属性编号</td>
+                <td>属性名</td>
+            </tr>
+            <tr v-for="item in docClassInfo.properties">
+                <td>{{item.order}} </td>
+                <td>{{item.name}} </td>
+            </tr>
+        </table>
+            -->
+    </div>
+    <label>卷:</label>
         <div class="dropdown" id="choose-volumn">
             <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 <span class="selected-name" id="choosed-volumn">选择卷</span>
@@ -70,46 +108,12 @@
                     <td>{{cl.uploader}}</td>
                     <td :class="'text-center'">
                         <button @click="explorer($index)">预览</button></td>
+                    <td v-for="item in volumnInfo.values">{{item.value}}</td>
                 </tr>
             </tbody>
         </table>
     </div>
-    <div>
-        <table border="2">
-            <tr>
-                <th>门类编号</th>
-                <th>门类名</th>
-                <th>门类层级</th>
-                <th>父门类编号</th>
-                <th>是否为新规则档案</th>
-                <th>特殊属性</th>
-            </tr>
-            <tr>
-                <td> {{docClassInfo.id}} </td>
-                <td> {{docClassInfo.name}} </td>
-                <td> {{docClassInfo.level}} </td>
-                <td> {{docClassInfo.parent_id}} </td>
-                <td> {{docClassInfo.type}} </td>
-                <td v-for="item in docClassInfo.properties">
-                    {{item.name}}
-                </td>
-            </tr>
-        </table>
-                
-            <!--
-        </table>
-        <table border="2">
-            <tr>
-                <td>属性编号</td>
-                <td>属性名</td>
-            </tr>
-            <tr v-for="item in docClassInfo.properties">
-                <td>{{item.order}} </td>
-                <td>{{item.name}} </td>
-            </tr>
-        </table>
-            -->
-    </div>
+    <!--
     <div v-for="value in docClassInfo">
         {{$key}}:{{value}}
     </div>
@@ -133,6 +137,7 @@
             {{$key}}:{{value}}
         </div>
     </div>
+    -->
     <br/>
     <div v-if="error > 0" color="red">
         Error Num: {{error}}<br/>
